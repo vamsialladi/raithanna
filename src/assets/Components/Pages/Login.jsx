@@ -67,27 +67,30 @@ function Login({ onRegister, onLoginSuccess }) {
   const { t } = useTranslation()
   const [selectedRoleKey, setSelectedRoleKey] = useState('roleLandlord')
   const [showPassword, setShowPassword] = useState(false)
+  const [showUnderDevModal, setShowUnderDevModal] = useState(false)
+  const [attemptedRoleKey, setAttemptedRoleKey] = useState('roleFarmer')
 
   function handleSubmit(event) {
     event.preventDefault()
+
+    // Landlord Dashboard is only accessible for Landlord Farmer
+    if (selectedRoleKey !== 'roleLandlord') {
+      setAttemptedRoleKey(selectedRoleKey)
+      setShowUnderDevModal(true)
+      return
+    }
+
     const formData = new FormData(event.target)
     const rawInput = formData.get('email') || ''
-    const defaultNames = {
-      roleLandlord: 'Ramu Naik',
-      roleTenant: 'Ravi Teja',
-      roleFarmer: 'Suresh Kumar',
-      roleBuyer: 'Anand Reddy',
-      roleServiceProvider: 'Kiran Agri Services',
-    }
     const displayName = rawInput && !rawInput.includes('@') && isNaN(rawInput)
       ? rawInput
-      : defaultNames[selectedRoleKey] || 'Ramu Naik'
+      : 'Ramu Naik'
 
     if (onLoginSuccess) {
       onLoginSuccess({
         name: displayName,
-        roleKey: selectedRoleKey,
-        role: roleDefinitions.find((r) => r.key === selectedRoleKey)?.fallback || 'Landlord Farmer',
+        roleKey: 'roleLandlord',
+        role: 'Landlord Farmer',
         email: rawInput || `${displayName.toLowerCase().replace(/\s+/g, '.')}@raithanna.org`,
         location: 'Hyderabad, Telangana',
       })
@@ -127,7 +130,13 @@ function Login({ onRegister, onLoginSuccess }) {
               key={item.key}
               type="button"
               aria-pressed={selectedRoleKey === item.key}
-              onClick={() => setSelectedRoleKey(item.key)}
+              onClick={() => {
+                setSelectedRoleKey(item.key)
+                if (item.key !== 'roleLandlord') {
+                  setAttemptedRoleKey(item.key)
+                  setShowUnderDevModal(true)
+                }
+              }}
               className={`flex min-h-12 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs text-center transition-colors ${
                 selectedRoleKey === item.key
                   ? 'bg-green-700 text-white shadow-sm'
@@ -211,6 +220,42 @@ function Login({ onRegister, onLoginSuccess }) {
           </button>
         </p>
       </section>
+
+      {/* Under Development Popup Modal */}
+      {showUnderDevModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full shadow-2xl border border-slate-100 text-center animate-in fade-in zoom-in-95">
+            <div className="h-14 w-14 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center mx-auto mb-3.5 text-2xl shadow-xs">
+              🚧
+            </div>
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-2">
+              {t(attemptedRoleKey || selectedRoleKey)} — {t('underDevModalTitle')}
+            </h3>
+            <p className="text-xs text-slate-600 leading-relaxed mb-6">
+              {t('underDevModalDesc')}
+            </p>
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedRoleKey('roleLandlord')
+                  setShowUnderDevModal(false)
+                }}
+                className="w-full py-2.5 px-4 rounded-xl bg-green-700 hover:bg-green-800 text-white text-xs font-bold transition shadow-sm cursor-pointer"
+              >
+                {t('underDevSwitchToLandlord')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowUnderDevModal(false)}
+                className="w-full py-2 px-4 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-semibold transition cursor-pointer"
+              >
+                {t('underDevClose')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   )
 }

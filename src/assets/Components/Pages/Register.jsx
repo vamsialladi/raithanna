@@ -13,9 +13,19 @@ function Register({ onLogin, onRegisterSuccess }) {
   const { t } = useTranslation()
   const [role, setRole] = useState('roleLandlord')
   const [showPassword, setShowPassword] = useState(false)
+  const [showUnderDevModal, setShowUnderDevModal] = useState(false)
+  const [attemptedRoleKey, setAttemptedRoleKey] = useState('roleFarmer')
 
   function handleSubmit(event) {
     event.preventDefault()
+
+    // Landlord Dashboard is only accessible for Landlord Farmer
+    if (role !== 'roleLandlord') {
+      setAttemptedRoleKey(role)
+      setShowUnderDevModal(true)
+      return
+    }
+
     const formData = new FormData(event.target)
     const defaultNames = {
       roleLandlord: 'Ramu Naik',
@@ -75,7 +85,14 @@ function Register({ onLogin, onRegisterSuccess }) {
               name="role"
               aria-label={t('selectAccountType')}
               value={role}
-              onChange={(event) => setRole(event.target.value)}
+              onChange={(event) => {
+                const newRole = event.target.value
+                setRole(newRole)
+                if (newRole !== 'roleLandlord') {
+                  setAttemptedRoleKey(newRole)
+                  setShowUnderDevModal(true)
+                }
+              }}
               className="min-h-[46px] w-full rounded-lg border border-slate-200 bg-white px-3 text-xs text-slate-700 outline-none transition focus:border-green-700 focus:ring-2 focus:ring-green-700/10"
             >
               {roleDefinitions.map((item) => (
@@ -227,6 +244,42 @@ function Register({ onLogin, onRegisterSuccess }) {
           </button>
         </p>
       </section>
+
+      {/* Under Development Popup Modal */}
+      {showUnderDevModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full shadow-2xl border border-slate-100 text-center animate-in fade-in zoom-in-95">
+            <div className="h-14 w-14 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center mx-auto mb-3.5 text-2xl shadow-xs">
+              🚧
+            </div>
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-2">
+              {t(attemptedRoleKey || role)} — {t('underDevModalTitle')}
+            </h3>
+            <p className="text-xs text-slate-600 leading-relaxed mb-6">
+              {t('underDevModalDesc')}
+            </p>
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setRole('roleLandlord')
+                  setShowUnderDevModal(false)
+                }}
+                className="w-full py-2.5 px-4 rounded-xl bg-green-700 hover:bg-green-800 text-white text-xs font-bold transition shadow-sm cursor-pointer"
+              >
+                {t('underDevSwitchToLandlord')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowUnderDevModal(false)}
+                className="w-full py-2 px-4 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-semibold transition cursor-pointer"
+              >
+                {t('underDevClose')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   )
 }
