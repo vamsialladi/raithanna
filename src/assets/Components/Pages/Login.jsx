@@ -1,10 +1,17 @@
 import { useState } from 'react'
+import { useTranslation } from '../../../context/LanguageContext.jsx'
 
-const roles = ['Farmer', 'Landlord Farmer', 'Tenant Farmer', 'Buyer', 'Service Provider']
+const roleDefinitions = [
+  { key: 'roleFarmer', fallback: 'Farmer' },
+  { key: 'roleLandlord', fallback: 'Landlord Farmer' },
+  { key: 'roleTenant', fallback: 'Tenant Farmer' },
+  { key: 'roleBuyer', fallback: 'Buyer' },
+  { key: 'roleServiceProvider', fallback: 'Service Provider' },
+]
 
 function getRoleIcon(role) {
-  if (role === 'Farmer' || role === 'Landlord Farmer' || role === 'Tenant Farmer') return '◈'
-  if (role === 'Buyer') return '🛒'
+  if (role === 'roleFarmer' || role === 'roleLandlord' || role === 'roleTenant') return '◈'
+  if (role === 'roleBuyer') return '🛒'
   return '♟'
 }
 
@@ -56,12 +63,24 @@ function FieldIcon({ name }) {
   )
 }
 
-function Login({ onRegister }) {
-  const [role, setRole] = useState('Farmer')
+function Login({ onRegister, onLoginSuccess }) {
+  const { t } = useTranslation()
+  const [selectedRoleKey, setSelectedRoleKey] = useState('roleLandlord')
   const [showPassword, setShowPassword] = useState(false)
 
   function handleSubmit(event) {
     event.preventDefault()
+    const formData = new FormData(event.target)
+    const email = formData.get('email') || 'ramu.naik@raithanna.org'
+    if (onLoginSuccess) {
+      onLoginSuccess({
+        name: 'Ramu Naik',
+        roleKey: selectedRoleKey,
+        role: roleDefinitions.find((r) => r.key === selectedRoleKey)?.fallback || 'Landlord Farmer',
+        email,
+        location: 'Hyderabad, Telangana',
+      })
+    }
   }
 
   return (
@@ -75,37 +94,37 @@ function Login({ onRegister }) {
           <div className="grid gap-px">
             <span className="text-2xl font-bold leading-tight tracking-tight">Raithanna</span>
             <span className="text-[9px] font-medium tracking-wide text-green-950/80">
-              Farmers Today, Brighter Tomorrow
+              {t('footerTagline')}
             </span>
           </div>
         </header>
 
         <div className="mb-8 text-center">
           <h1 id="login-title" className="text-3xl font-bold leading-tight tracking-tight text-slate-900">
-            Welcome Back
+            {t('loginTitle')}
           </h1>
-          <p className="mt-2 text-base text-slate-500">Sign in to your RythuMitra account</p>
+          <p className="mt-2 text-base text-slate-500">{t('loginSubtitle')}</p>
         </div>
 
         <div
           role="group"
-          aria-label="Select account type"
+          aria-label={t('selectAccountType')}
           className="mb-7 grid grid-cols-2 gap-1.5 rounded-xl border border-slate-200 p-1.5 sm:grid-cols-3"
         >
-          {roles.map((item) => (
+          {roleDefinitions.map((item) => (
             <button
-              key={item}
+              key={item.key}
               type="button"
-              aria-pressed={role === item}
-              onClick={() => setRole(item)}
+              aria-pressed={selectedRoleKey === item.key}
+              onClick={() => setSelectedRoleKey(item.key)}
               className={`flex min-h-12 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs text-center transition-colors ${
-                role === item
+                selectedRoleKey === item.key
                   ? 'bg-green-700 text-white shadow-sm'
                   : 'text-slate-700 hover:bg-green-50'
               }`}
             >
-              <span aria-hidden="true">{getRoleIcon(item)}</span>
-              {item}
+              <span aria-hidden="true">{getRoleIcon(item.key)}</span>
+              {t(item.key)}
             </button>
           ))}
         </div>
@@ -117,15 +136,12 @@ function Login({ onRegister }) {
               <input
                 type="text"
                 name="email" 
-                placeholder="Email or Mobile Number"
-                aria-label="Email or mobile number"
+                placeholder={t('emailOrMobile')}
+                aria-label={t('emailOrMobile')}
                 autoComplete="username"
                 required
                 className="min-w-0 flex-1 bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-500"
               />
-            </span>
-            <span className="text-xs leading-relaxed text-slate-500">
-              Enter your registered email or mobile number
             </span>
           </label>
 
@@ -135,8 +151,8 @@ function Login({ onRegister }) {
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
-                placeholder="Password"
-                aria-label="Password"
+                placeholder={t('password')}
+                aria-label={t('password')}
                 autoComplete="current-password"
                 required
                 className="min-w-0 flex-1 bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-500"
@@ -150,16 +166,15 @@ function Login({ onRegister }) {
                 <FieldIcon name="eye" />
               </button>
             </span>
-            <span className="text-xs leading-relaxed text-slate-500">Enter your password</span>
           </label>
 
           <div className="flex items-center justify-between text-sm text-slate-800">
             <label className="inline-flex cursor-pointer items-center gap-1.5">
               <input type="checkbox" name="remember" className="h-4 w-4 accent-green-700" />
-              <span>Remember me</span>
+              <span>{t('rememberMe')}</span>
             </label>
             <button type="button" className="font-semibold text-green-800 hover:underline">
-              Forgot password?
+              {t('forgotPassword')}
             </button>
           </div>
 
@@ -167,7 +182,7 @@ function Login({ onRegister }) {
             type="submit"
             className="mt-1 flex min-h-[54px] items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-green-700 to-green-800 text-base font-semibold text-white shadow-sm transition hover:-translate-y-px hover:from-green-800 hover:to-green-900"
           >
-            Login
+            {t('signInBtn')}
             <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 fill-none stroke-current">
               <path d="M3.5 10h12m-5-5 5 5-5 5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" />
             </svg>
@@ -175,13 +190,13 @@ function Login({ onRegister }) {
         </form>
 
         <p className="mt-7 text-center text-sm text-slate-500">
-          Don&apos;t have an account?{' '}
+          {t('noAccountPrompt')}{' '}
           <button
             type="button"
             onClick={onRegister}
             className="font-semibold text-green-800 hover:underline"
           >
-            Register
+            {t('signUpBtn')}
           </button>
         </p>
       </section>

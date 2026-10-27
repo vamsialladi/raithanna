@@ -1,13 +1,5 @@
-import { useState } from 'react'
-
-const links = [
-  { label: 'Home', href: '#home' },
-  { label: 'About', href: '#about' },
-  { label: 'Contact', href: '#contact' },
-  { label: 'Services', href: '#services' },
-]
-
-const languages = ['English', 'తెలుగు', 'ಕನ್ನಡ', 'हिन्दी', 'தமிழ்']
+import { useState, useRef, useEffect } from 'react'
+import { useTranslation } from '../../../context/LanguageContext.jsx'
 
 function SearchIcon() {
   return (
@@ -18,10 +10,32 @@ function SearchIcon() {
   )
 }
 
-function Navbar({ onAuthOpen, onHome }) {
+function Navbar({ onAuthOpen, onHome, currentUser, onDashboardOpen }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [languageOpen, setLanguageOpen] = useState(false)
-  const [language, setLanguage] = useState('English')
+  const pickerRef = useRef(null)
+  const { language, setLanguage, t, availableLanguages } = useTranslation()
+
+  const links = [
+    { label: t('navHome'), href: '#home' },
+    { label: t('navAbout'), href: '#about' },
+    { label: t('navContact'), href: '#contact' },
+    { label: t('navServices'), href: '#services' },
+  ]
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (pickerRef.current && !pickerRef.current.contains(event.target)) {
+        setLanguageOpen(false)
+      }
+    }
+    if (languageOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [languageOpen])
 
   return (
     <header className="site-header">
@@ -31,7 +45,12 @@ function Navbar({ onAuthOpen, onHome }) {
         </a>
 
         <form className="search-box" role="search" action="#services">
-          <input aria-label="Search Raithanna" name="q" placeholder="Search..." type="search" />
+          <input
+            aria-label="Search Raithanna"
+            name="q"
+            placeholder={t('navSearchPlaceholder')}
+            type="search"
+          />
           <button type="submit" aria-label="Search">
             <SearchIcon />
           </button>
@@ -55,7 +74,7 @@ function Navbar({ onAuthOpen, onHome }) {
               <a
                 className="site-nav__link"
                 href={link.href}
-                key={link.label}
+                key={link.href}
                 onClick={() => {
                   setMenuOpen(false)
                   onHome()
@@ -67,7 +86,7 @@ function Navbar({ onAuthOpen, onHome }) {
           </nav>
 
           <div className="site-header__actions">
-            <div className="language-picker">
+            <div className="language-picker" ref={pickerRef}>
               <button
                 className="translate-button"
                 type="button"
@@ -79,11 +98,11 @@ function Navbar({ onAuthOpen, onHome }) {
                   <circle cx="12" cy="12" r="9" />
                   <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
                 </svg>
-                <span>Translate</span>
+                <span>{language === 'English' ? t('navTranslate') : language}</span>
               </button>
               {languageOpen && (
                 <div className="language-menu" role="group" aria-label="Choose language">
-                  {languages.map((option) => (
+                  {availableLanguages.map((option) => (
                     <button
                       className="language-menu__option"
                       type="button"
@@ -94,23 +113,36 @@ function Navbar({ onAuthOpen, onHome }) {
                         setLanguageOpen(false)
                       }}
                     >
-                      {option}
-                      {language === option && <span aria-hidden="true">✓</span>}
+                      <span>{option}</span>
+                      {language === option && <span aria-hidden="true" style={{ color: '#17613c', fontWeight: 'bold' }}>✓</span>}
                     </button>
                   ))}
                 </div>
               )}
             </div>
-            <button
-              className="signup-button"
-              type="button"
-              onClick={() => {
-                setMenuOpen(false)
-                onAuthOpen()
-              }}
-            >
-              Login / Register
-            </button>
+            {currentUser ? (
+              <button
+                className="signup-button"
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false)
+                  if (onDashboardOpen) onDashboardOpen()
+                }}
+              >
+                Dashboard ({currentUser.name})
+              </button>
+            ) : (
+              <button
+                className="signup-button"
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false)
+                  onAuthOpen()
+                }}
+              >
+                {t('navLoginRegister')}
+              </button>
+            )}
           </div>
         </div>
       </div>
