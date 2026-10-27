@@ -1,4 +1,8 @@
+import { useTranslation } from '../../../context/LanguageContext.jsx'
+
 function Footer() {
+  const { t } = useTranslation()
+
   return (
     <footer className="site-footer" id="contact">
       <div className="site-footer__inner">
@@ -8,22 +12,20 @@ function Footer() {
               <img className="footer-brand__logo" src="/raithanna-logo.png" alt="Raithanna — The next generation farmer" />
             </a>
             <p>
-              Building a connected agricultural ecosystem where land, people,
-              technology and markets work together for a stronger, more
-              sustainable future.
+              {t('footerDescription')}
             </p>
           </div>
 
           <div className="footer-links">
-            <h2>Quick links</h2>
-            <a href="#home">Home</a>
-            <a href="#about">About Raithanna</a>
-            <a href="#services">Our services</a>
-            <a href="#contact">Contact</a>
+            <h2>{t('footerQuickLinks')}</h2>
+            <a href="#home">{t('navHome')}</a>
+            <a href="#about">{t('footerAboutLink')}</a>
+            <a href="#services">{t('footerServicesLink')}</a>
+            <a href="#contact">{t('footerContactLink')}</a>
           </div>
 
           <div className="footer-social">
-            <h2>Follow us</h2>
+            <h2>{t('footerFollowUs')}</h2>
             <div className="footer-social__links">
               <a href="https://www.linkedin.com/" aria-label="LinkedIn">in</a>
               <a href="https://x.com/" aria-label="X">X</a>
@@ -34,11 +36,11 @@ function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} Raithanna. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} {t('footerAllRightsReserved')}</span>
           <div>
-            <a href="#privacy">Privacy policy</a>
+            <a href="#privacy">{t('footerPrivacy')}</a>
             <span aria-hidden="true">|</span>
-            <a href="#terms">Terms of service</a>
+            <a href="#terms">{t('footerTerms')}</a>
           </div>
         </div>
       </div>

@@ -3,13 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
 import { useMarketplace } from '../../../context/MarketplaceContext';
+import { useTranslation } from '../../../context/LanguageContext';
 import { USER_ROLES, ROLE_DEFINITIONS, normalizeRole } from '../../../constants/roles';
 
-function Register({ onLogin }) {
+function Register({ onLogin, onRegisterSuccess }) {
   const navigate = useNavigate();
   const marketplace = useMarketplace ? useMarketplace() : null;
   const auth = useAuth ? useAuth() : null;
   const showToast = useToast ? useToast() : null;
+  const { t } = useTranslation ? useTranslation() : { t: (k) => k };
 
   const [role, setRole] = useState(USER_ROLES.TENANT_FARMER);
   const [showPassword, setShowPassword] = useState(false);
@@ -41,12 +43,25 @@ function Register({ onLogin }) {
       const derivedName = `${firstName} ${lastName}`.trim() || 'New User';
       const normRole = normalizeRole(role);
 
+      if (onRegisterSuccess) {
+        onRegisterSuccess({
+          name: derivedName,
+          roleKey: normRole === USER_ROLES.LANDLORD_FARMER ? 'roleLandlord' : 'roleOther',
+          role: normRole,
+          email,
+          mobile,
+        });
+      }
+
       if (normRole === USER_ROLES.BUYER) {
         if (auth?.register) {
           await auth.register({ name: derivedName, email, mobile, role: 'Buyer' });
         }
-        if (showToast) showToast('Registration successful as Buyer! Welcome to RythuMitra.');
+        if (showToast) showToast('Registration successful as Buyer! Welcome to Raithanna.');
         navigate('/buyer/dashboard', { replace: true });
+      } else if (normRole === USER_ROLES.LANDLORD_FARMER) {
+        if (showToast) showToast(`Registration successful! Welcome to Landlord Farmland Portal, ${derivedName}.`);
+        navigate('/landlord', { replace: true });
       } else if (normRole === USER_ROLES.TENANT_FARMER) {
         if (marketplace?.login) {
           await marketplace.login({
@@ -56,7 +71,7 @@ function Register({ onLogin }) {
             remember: true,
           });
         }
-        if (showToast) showToast(`Welcome to RythuMitra, ${derivedName}!`);
+        if (showToast) showToast(`Welcome to Raithanna, ${derivedName}!`);
         navigate('/dashboard', { replace: true });
       } else {
         if (showToast) showToast(`Account created for ${derivedName}. Redirecting to login.`);
@@ -93,22 +108,22 @@ function Register({ onLogin }) {
           <div className="grid gap-px">
             <span className="text-[19px] font-bold leading-tight tracking-tight">Raithanna</span>
             <span className="text-[7px] font-medium tracking-wide text-green-950/80">
-              Farmers Today, Brighter Tomorrow
+              {t('footerTagline') || 'Farmers Today, Brighter Tomorrow'}
             </span>
           </div>
         </header>
 
         <div className="mb-6 text-center">
           <h1 id="register-title" className="text-[25px] font-bold leading-tight tracking-tight text-slate-900">
-            Create Account
+            {t('registerTitle') || 'Create Account'}
           </h1>
-          <p className="mt-1 text-sm text-slate-500">Join the Raithanna / RythuMitra community</p>
+          <p className="mt-1 text-sm text-slate-500">{t('registerSubtitle') || 'Join the Raithanna community'}</p>
         </div>
 
         {/* Role buttons grid */}
         <div
           role="group"
-          aria-label="Select account type"
+          aria-label={t('selectAccountType') || 'Select account type'}
           className="mb-5 grid grid-cols-2 gap-1.5 rounded-xl border border-slate-200 p-1.5 sm:grid-cols-3"
         >
           {ROLE_DEFINITIONS.map((item) => (
@@ -145,7 +160,7 @@ function Register({ onLogin }) {
               name="firstName"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              placeholder="First Name"
+              placeholder={t('firstNamePlaceholder') || 'First Name'}
               aria-label="First name"
               autoComplete="given-name"
               required
@@ -159,7 +174,7 @@ function Register({ onLogin }) {
               name="lastName"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              placeholder="Last Name"
+              placeholder={t('lastNamePlaceholder') || 'Last Name'}
               aria-label="Last name"
               autoComplete="family-name"
               required
@@ -173,7 +188,7 @@ function Register({ onLogin }) {
               name="mobileNumber"
               value={mobile}
               onChange={(e) => setMobile(e.target.value)}
-              placeholder="Mobile Number"
+              placeholder={t('mobilePlaceholder') || 'Mobile Number'}
               aria-label="Mobile number"
               autoComplete="tel"
               inputMode="tel"
@@ -188,7 +203,7 @@ function Register({ onLogin }) {
               name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email Address"
+              placeholder={t('emailPlaceholder') || 'Email Address'}
               aria-label="Email address"
               autoComplete="email"
               required
@@ -215,7 +230,7 @@ function Register({ onLogin }) {
               name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
+              placeholder={t('passwordPlaceholder') || 'Password'}
               aria-label="Password"
               autoComplete="new-password"
               required
@@ -237,7 +252,7 @@ function Register({ onLogin }) {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
-                <path d="M2.5 12s3.4-5.3 9.5-5.3 9.5 5.3 9.5 5.3-3.4 5.3-9.5 5.3S2.5 12 2.5 12Z" />
+                <path d="M2.5 12s3.4-5.3 9.5-5.3 9.5 5.3-3.4 5.3-9.5 5.3S2.5 12 2.5 12Z" />
                 <circle cx="12" cy="12" r="2.4" />
               </svg>
             </button>
@@ -262,7 +277,7 @@ function Register({ onLogin }) {
               name="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm Password"
+              placeholder={t('confirmPasswordPlaceholder') || 'Confirm Password'}
               aria-label="Confirm password"
               autoComplete="new-password"
               required
@@ -280,7 +295,8 @@ function Register({ onLogin }) {
               className="h-4 w-4 accent-green-700"
             />
             <span>
-              I agree to the <span className="font-semibold text-green-800">Terms and Conditions</span>
+              {t('agreeTerms') || 'I agree to the'}{' '}
+              <span className="font-semibold text-green-800">{t('termsAndConditions') || 'Terms and Conditions'}</span>
             </span>
           </label>
 
@@ -289,7 +305,7 @@ function Register({ onLogin }) {
             disabled={isLoading}
             className="mt-0.5 flex min-h-[47px] items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-green-700 to-green-800 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-px hover:from-green-800 hover:to-green-900 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Creating Account...' : 'Register'}
+            {isLoading ? 'Creating Account...' : t('registerBtn') || 'Register'}
             <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 fill-none stroke-current">
               <path d="M3.5 10h12m-5-5 5 5-5 5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" />
             </svg>
@@ -297,13 +313,13 @@ function Register({ onLogin }) {
         </form>
 
         <p className="mt-5 text-center text-xs text-slate-500">
-          Already have an account?{' '}
+          {t('alreadyHaveAccount') || 'Already have an account?'}{' '}
           <button
             type="button"
             onClick={onLogin ? onLogin : () => navigate('/login')}
             className="font-semibold text-green-800 hover:underline cursor-pointer"
           >
-            Login
+            {t('loginLink') || 'Login'}
           </button>
         </p>
       </section>

@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useMarketplace } from '../../../context/MarketplaceContext';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
+import { useTranslation } from '../../../context/LanguageContext';
 import { authService } from '../../../services/authService';
 import { USER_ROLES, ROLE_DEFINITIONS, normalizeRole } from '../../../constants/roles';
 
@@ -58,6 +59,7 @@ function Login({ onRegister, onLoginSuccess }) {
   const marketplace = useMarketplace ? useMarketplace() : null;
   const auth = useAuth ? useAuth() : null;
   const showToast = useToast ? useToast() : null;
+  const { t } = useTranslation ? useTranslation() : { t: (k) => k };
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -133,32 +135,30 @@ function Login({ onRegister, onLoginSuccess }) {
         });
       }
 
+      if (onLoginSuccess) {
+        onLoginSuccess({
+          ...authenticatedUser,
+          roleKey: authorizedRole === USER_ROLES.LANDLORD_FARMER ? 'roleLandlord' : 'roleOther',
+        });
+      }
+
+      // Role routing
       if (authorizedRole === USER_ROLES.BUYER) {
         if (showToast) showToast('Logged in as Buyer! Redirecting to Buyer Dashboard...');
-        if (onLoginSuccess) {
-          onLoginSuccess(authenticatedUser);
-        } else {
-          navigate('/buyer/dashboard', { replace: true });
-        }
+        navigate('/buyer/dashboard', { replace: true });
+      } else if (authorizedRole === USER_ROLES.LANDLORD_FARMER) {
+        if (showToast) showToast(`Welcome back, ${authenticatedUser.farmerName}! Redirecting to Landlord Dashboard...`);
+        navigate('/landlord', { replace: true });
       } else if (authorizedRole === USER_ROLES.TENANT_FARMER) {
         if (showToast) showToast(`Welcome back, ${authenticatedUser.farmerName}!`);
-        if (onLoginSuccess) {
-          onLoginSuccess(authenticatedUser);
-        } else {
-          navigate(from, { replace: true });
-        }
+        navigate(from, { replace: true });
       } else {
-        // Other roles (Landlord, Service Provider, General Farmer)
+        // Service Provider / General Farmer
         if (marketplace?.setActiveModule) {
-          if (authorizedRole === USER_ROLES.LANDLORD_FARMER) marketplace.setActiveModule('landlord');
-          else if (authorizedRole === USER_ROLES.SERVICE_PROVIDER) marketplace.setActiveModule('service-provider');
+          if (authorizedRole === USER_ROLES.SERVICE_PROVIDER) marketplace.setActiveModule('service-provider');
         }
         if (showToast) showToast(`Welcome back, ${authenticatedUser.farmerName}!`);
-        if (onLoginSuccess) {
-          onLoginSuccess(authenticatedUser);
-        } else {
-          navigate('/dashboard', { replace: true });
-        }
+        navigate('/dashboard', { replace: true });
       }
     } catch (err) {
       setError(err.message || 'Login failed. Please verify your credentials.');
@@ -180,22 +180,22 @@ function Login({ onRegister, onLoginSuccess }) {
           <div className="grid gap-px">
             <span className="text-2xl font-bold leading-tight tracking-tight">Raithanna</span>
             <span className="text-[9px] font-medium tracking-wide text-green-950/80">
-              Farmers Today, Brighter Tomorrow
+              {t('footerTagline') || 'Farmers Today, Brighter Tomorrow'}
             </span>
           </div>
         </header>
 
         <div className="mb-8 text-center">
           <h1 id="login-title" className="text-3xl font-bold leading-tight tracking-tight text-slate-900">
-            Welcome Back
+            {t('loginTitle') || 'Welcome Back'}
           </h1>
-          <p className="mt-2 text-base text-slate-500">Sign in to your RythuMitra account</p>
+          <p className="mt-2 text-base text-slate-500">{t('loginSubtitle') || 'Sign in to your Raithanna account'}</p>
         </div>
 
         {/* Role Selection Group */}
         <div
           role="group"
-          aria-label="Select account type"
+          aria-label={t('selectAccountType') || 'Select account type'}
           className="mb-7 grid grid-cols-2 gap-1.5 rounded-xl border border-slate-200 p-1.5 sm:grid-cols-3"
         >
           {ROLE_DEFINITIONS.map((item) => (
@@ -253,15 +253,15 @@ function Login({ onRegister, onLoginSuccess }) {
                   setEmail(e.target.value);
                   if (error) setError('');
                 }}
-                placeholder="Email or Mobile Number"
-                aria-label="Email or mobile number"
+                placeholder={t('emailOrMobile') || 'Email or Mobile Number'}
+                aria-label={t('emailOrMobile') || 'Email or mobile number'}
                 autoComplete="username"
                 required
                 className="min-w-0 flex-1 bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-500"
               />
             </span>
             <span className="text-xs leading-relaxed text-slate-500">
-              Enter your registered email or mobile number
+              {t('enterEmailOrMobile') || 'Enter your registered email or mobile number'}
             </span>
           </label>
 
@@ -277,8 +277,8 @@ function Login({ onRegister, onLoginSuccess }) {
                   setPassword(e.target.value);
                   if (error) setError('');
                 }}
-                placeholder="Password"
-                aria-label="Password"
+                placeholder={t('passwordPlaceholder') || 'Password'}
+                aria-label={t('passwordPlaceholder') || 'Password'}
                 autoComplete="current-password"
                 required
                 className="min-w-0 flex-1 bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-500"
@@ -292,7 +292,7 @@ function Login({ onRegister, onLoginSuccess }) {
                 <FieldIcon name="eye" />
               </button>
             </span>
-            <span className="text-xs leading-relaxed text-slate-500">Enter your password</span>
+            <span className="text-xs leading-relaxed text-slate-500">{t('enterPassword') || 'Enter your password'}</span>
           </label>
 
           {/* Remember Me and Forgot Password */}
@@ -305,10 +305,10 @@ function Login({ onRegister, onLoginSuccess }) {
                 onChange={(e) => setRemember(e.target.checked)}
                 className="h-4 w-4 accent-green-700"
               />
-              <span>Remember me</span>
+              <span>{t('rememberMe') || 'Remember me'}</span>
             </label>
             <button type="button" className="font-semibold text-green-800 hover:underline">
-              Forgot password?
+              {t('forgotPassword') || 'Forgot password?'}
             </button>
           </div>
 
@@ -318,7 +318,7 @@ function Login({ onRegister, onLoginSuccess }) {
             disabled={isLoading}
             className="mt-1 flex min-h-[54px] items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-green-700 to-green-800 text-base font-semibold text-white shadow-sm transition hover:-translate-y-px hover:from-green-800 hover:to-green-900 disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer"
           >
-            {isLoading ? 'Signing In...' : 'Login'}
+            {isLoading ? 'Signing In...' : t('loginBtn') || 'Login'}
             <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 fill-none stroke-current">
               <path d="M3.5 10h12m-5-5 5 5-5 5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" />
             </svg>
@@ -326,13 +326,13 @@ function Login({ onRegister, onLoginSuccess }) {
         </form>
 
         <p className="mt-7 text-center text-sm text-slate-500">
-          Don&apos;t have an account?{' '}
+          {t('noAccountPrompt') || "Don't have an account?"}{' '}
           <button
             type="button"
             onClick={onRegister ? onRegister : () => navigate('/register')}
             className="font-semibold text-green-800 hover:underline cursor-pointer"
           >
-            Register
+            {t('registerLink') || 'Register'}
           </button>
         </p>
       </section>

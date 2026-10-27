@@ -8,6 +8,9 @@ import { ToastProvider } from './context/ToastContext';
 // Public & Landing Pages
 import MainLandingPage from './pages/MainLandingPage';
 
+// Landlord Farmland Dashboard
+import LandlordDashboard from './assets/Components/Dashboard/LandlordDashboard';
+
 // Tenant Farmer Portal & Authentication
 import TenantFarmerLayout from './components/layout/TenantFarmerLayout';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -52,7 +55,29 @@ function App() {
                   <Route path="/login" element={<MainLandingPage initialAuthMode="login" />} />
                   <Route path="/register" element={<MainLandingPage initialAuthMode="register" />} />
 
-                  {/* 2. Tenant Farmer Dashboard Routes (Protected) */}
+                  {/* 2. Landlord Farmland Dashboard Routes */}
+                  <Route
+                    path="/landlord/*"
+                    element={
+                      <LandlordDashboard
+                        onLogout={() => {
+                          window.location.href = '/';
+                        }}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/landlord"
+                    element={
+                      <LandlordDashboard
+                        onLogout={() => {
+                          window.location.href = '/';
+                        }}
+                      />
+                    }
+                  />
+
+                  {/* 3. Tenant Farmer Dashboard Routes (Protected) */}
                   <Route
                     path="/dashboard/*"
                     element={
@@ -78,7 +103,7 @@ function App() {
                     }
                   />
 
-                  {/* 3. Buyer Portal with Shared Layout */}
+                  {/* 4. Buyer Portal with Shared Layout */}
                   <Route path="/buyer" element={<BuyerLayout />}>
                     <Route index element={<Navigate to="/buyer/dashboard" replace />} />
                     <Route path="dashboard" element={<BuyerDashboard />} />
@@ -101,7 +126,7 @@ function App() {
                     <Route path="settings" element={<SettingsPage />} />
                   </Route>
 
-                  {/* 4. Fallback */}
+                  {/* 5. Fallback */}
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </ToastProvider>
