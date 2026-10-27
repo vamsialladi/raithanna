@@ -1,12 +1,32 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../../context/AuthContext'
+import { useToast } from '../../../context/ToastContext'
+
 const roles = ['Farmer', 'Landlord Farmer', 'Tenant Farmer', 'Buyer', 'Service Provider']
+
+function getRoleIcon(role) {
+  if (role === 'Farmer' || role === 'Landlord Farmer' || role === 'Tenant Farmer') return '◈'
+  if (role === 'Buyer') return '🛒'
+  return '♟'
+}
 
 function Register({ onLogin }) {
   const [role, setRole] = useState('Farmer')
   const [showPassword, setShowPassword] = useState(false)
+  const navigate = useNavigate()
+  const { register } = useAuth()
+  const showToast = useToast()
 
   function handleSubmit(event) {
     event.preventDefault()
+    if (role === 'Buyer') {
+      register({ name: 'Arjun Sharma', role: 'Buyer' })
+      showToast('Registration successful as Buyer! Welcome to RythuMitra.')
+      navigate('/buyer/dashboard')
+    } else {
+      showToast(`${role} portal is under development. Please select Buyer to register for the Buyer Dashboard.`)
+    }
   }
 
   return (
@@ -40,23 +60,31 @@ function Register({ onLogin }) {
           <p className="mt-1 text-sm text-slate-500">Join the RythuMitra community</p>
         </div>
 
-        <form className="grid gap-4" onSubmit={handleSubmit}>
-          <label className="grid gap-1.5">
-            <span className="text-xs font-medium text-slate-700">Account type</span>
-            <select
-              name="role"
-              aria-label="Select account type"
-              value={role}
-              onChange={(event) => setRole(event.target.value)}
-              className="min-h-[46px] w-full rounded-lg border border-slate-200 bg-white px-3 text-xs text-slate-700 outline-none transition focus:border-green-700 focus:ring-2 focus:ring-green-700/10"
+        {/* Role buttons grid */}
+        <div
+          role="group"
+          aria-label="Select account type"
+          className="mb-5 grid grid-cols-2 gap-1.5 rounded-xl border border-slate-200 p-1.5 sm:grid-cols-3"
+        >
+          {roles.map((item) => (
+            <button
+              key={item}
+              type="button"
+              aria-pressed={role === item}
+              onClick={() => setRole(item)}
+              className={`flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-xs text-center transition-colors cursor-pointer ${
+                role === item
+                  ? 'bg-green-700 text-white shadow-sm font-bold'
+                  : 'text-slate-700 hover:bg-green-50'
+              }`}
             >
-              {roles.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </label>
+              <span aria-hidden="true">{getRoleIcon(item)}</span>
+              {item}
+            </button>
+          ))}
+        </div>
+
+        <form className="grid gap-4" onSubmit={handleSubmit}>
 
           <label className="flex min-h-[46px] items-center gap-2.5 rounded-lg border border-slate-200 px-3 transition focus-within:border-green-700 focus-within:ring-2 focus-within:ring-green-700/10">
             <input
@@ -191,7 +219,7 @@ function Register({ onLogin }) {
 
           <button
             type="submit"
-            className="mt-0.5 flex min-h-[47px] items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-green-700 to-green-800 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-px hover:from-green-800 hover:to-green-900"
+            className="mt-0.5 flex min-h-[47px] items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-green-700 to-green-800 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-px hover:from-green-800 hover:to-green-900 cursor-pointer"
           >
             Register
             <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 fill-none stroke-current">

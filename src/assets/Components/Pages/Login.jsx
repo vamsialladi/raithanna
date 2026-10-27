@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../../context/AuthContext'
+import { useToast } from '../../../context/ToastContext'
 
 const roles = ['Farmer', 'Landlord Farmer', 'Tenant Farmer', 'Buyer', 'Service Provider']
 
@@ -59,9 +62,19 @@ function FieldIcon({ name }) {
 function Login({ onRegister }) {
   const [role, setRole] = useState('Farmer')
   const [showPassword, setShowPassword] = useState(false)
+  const navigate = useNavigate()
+  const { login } = useAuth()
+  const showToast = useToast()
 
   function handleSubmit(event) {
     event.preventDefault()
+    if (role === 'Buyer') {
+      login({ email: 'arjun.sharma@example.com', role: 'Buyer' })
+      showToast('Logged in as Buyer! Redirecting to Buyer Dashboard...')
+      navigate('/buyer/dashboard')
+    } else {
+      showToast(`${role} portal is under development. Please select Buyer to view the Buyer Dashboard.`)
+    }
   }
 
   return (
@@ -116,7 +129,7 @@ function Login({ onRegister }) {
               <FieldIcon name="user" />
               <input
                 type="text"
-                name="email" 
+                name="email"
                 placeholder="Email or Mobile Number"
                 aria-label="Email or mobile number"
                 autoComplete="username"
