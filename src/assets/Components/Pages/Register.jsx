@@ -1,31 +1,76 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../../../context/AuthContext'
-import { useToast } from '../../../context/ToastContext'
-
-const roles = ['Farmer', 'Landlord Farmer', 'Tenant Farmer', 'Buyer', 'Service Provider']
-
-function getRoleIcon(role) {
-  if (role === 'Farmer' || role === 'Landlord Farmer' || role === 'Tenant Farmer') return '◈'
-  if (role === 'Buyer') return '🛒'
-  return '♟'
-}
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
+import { useToast } from '../../../context/ToastContext';
+import { useMarketplace } from '../../../context/MarketplaceContext';
+import { USER_ROLES, ROLE_DEFINITIONS, normalizeRole } from '../../../constants/roles';
 
 function Register({ onLogin }) {
-  const [role, setRole] = useState('Farmer')
-  const [showPassword, setShowPassword] = useState(false)
-  const navigate = useNavigate()
-  const { register } = useAuth()
-  const showToast = useToast()
+  const navigate = useNavigate();
+  const marketplace = useMarketplace ? useMarketplace() : null;
+  const auth = useAuth ? useAuth() : null;
+  const showToast = useToast ? useToast() : null;
 
-  function handleSubmit(event) {
-    event.preventDefault()
-    if (role === 'Buyer') {
-      register({ name: 'Arjun Sharma', role: 'Buyer' })
-      showToast('Registration successful as Buyer! Welcome to RythuMitra.')
-      navigate('/buyer/dashboard')
-    } else {
-      showToast(`${role} portal is under development. Please select Buyer to register for the Buyer Dashboard.`)
+  const [role, setRole] = useState(USER_ROLES.TENANT_FARMER);
+  const [showPassword, setShowPassword] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [mobile, setMobile] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setError('');
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+    if (!termsAccepted) {
+      setError('Please accept the Terms and Conditions.');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const derivedName = `${firstName} ${lastName}`.trim() || 'New User';
+      const normRole = normalizeRole(role);
+
+      if (normRole === USER_ROLES.BUYER) {
+        if (auth?.register) {
+          await auth.register({ name: derivedName, email, mobile, role: 'Buyer' });
+        }
+        if (showToast) showToast('Registration successful as Buyer! Welcome to RythuMitra.');
+        navigate('/buyer/dashboard', { replace: true });
+      } else if (normRole === USER_ROLES.TENANT_FARMER) {
+        if (marketplace?.login) {
+          await marketplace.login({
+            email: email || mobile || 'farmer@rythumitra.org',
+            password: password || '1234',
+            role: USER_ROLES.TENANT_FARMER,
+            remember: true,
+          });
+        }
+        if (showToast) showToast(`Welcome to RythuMitra, ${derivedName}!`);
+        navigate('/dashboard', { replace: true });
+      } else {
+        if (showToast) showToast(`Account created for ${derivedName}. Redirecting to login.`);
+        navigate('/login', {
+          state: {
+            roleNotice: `Registration successful! Please log in to continue.`,
+          },
+          replace: true,
+        });
+      }
+    } catch (err) {
+      setError(err.message || 'Registration failed.');
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -46,7 +91,7 @@ function Register({ onLogin }) {
             <path d="M5.2 13.3c5.8 2.8 10.1 7 12.9 12.4M29.7 6.7c-5.3 6.1-8.3 13-9 20.7" />
           </svg>
           <div className="grid gap-px">
-            <span className="text-[19px] font-bold leading-tight tracking-tight">RythuMitra</span>
+            <span className="text-[19px] font-bold leading-tight tracking-tight">Raithanna</span>
             <span className="text-[7px] font-medium tracking-wide text-green-950/80">
               Farmers Today, Brighter Tomorrow
             </span>
@@ -57,7 +102,7 @@ function Register({ onLogin }) {
           <h1 id="register-title" className="text-[25px] font-bold leading-tight tracking-tight text-slate-900">
             Create Account
           </h1>
-          <p className="mt-1 text-sm text-slate-500">Join the RythuMitra community</p>
+          <p className="mt-1 text-sm text-slate-500">Join the Raithanna / RythuMitra community</p>
         </div>
 
         {/* Role buttons grid */}
@@ -66,30 +111,40 @@ function Register({ onLogin }) {
           aria-label="Select account type"
           className="mb-5 grid grid-cols-2 gap-1.5 rounded-xl border border-slate-200 p-1.5 sm:grid-cols-3"
         >
-          {roles.map((item) => (
+          {ROLE_DEFINITIONS.map((item) => (
             <button
-              key={item}
+              key={item.id}
               type="button"
-              aria-pressed={role === item}
-              onClick={() => setRole(item)}
+              aria-pressed={role === item.id}
+              onClick={() => {
+                setRole(item.id);
+                setError('');
+              }}
               className={`flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-xs text-center transition-colors cursor-pointer ${
-                role === item
+                role === item.id
                   ? 'bg-green-700 text-white shadow-sm font-bold'
                   : 'text-slate-700 hover:bg-green-50'
               }`}
             >
-              <span aria-hidden="true">{getRoleIcon(item)}</span>
-              {item}
+              <span aria-hidden="true">{item.icon}</span>
+              {item.label}
             </button>
           ))}
         </div>
 
-        <form className="grid gap-4" onSubmit={handleSubmit}>
+        {error && (
+          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-semibold text-red-700">
+            {error}
+          </div>
+        )}
 
+        <form className="grid gap-4" onSubmit={handleSubmit}>
           <label className="flex min-h-[46px] items-center gap-2.5 rounded-lg border border-slate-200 px-3 transition focus-within:border-green-700 focus-within:ring-2 focus-within:ring-green-700/10">
             <input
               type="text"
               name="firstName"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
               placeholder="First Name"
               aria-label="First name"
               autoComplete="given-name"
@@ -102,6 +157,8 @@ function Register({ onLogin }) {
             <input
               type="text"
               name="lastName"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
               placeholder="Last Name"
               aria-label="Last name"
               autoComplete="family-name"
@@ -114,6 +171,8 @@ function Register({ onLogin }) {
             <input
               type="tel"
               name="mobileNumber"
+              value={mobile}
+              onChange={(e) => setMobile(e.target.value)}
               placeholder="Mobile Number"
               aria-label="Mobile number"
               autoComplete="tel"
@@ -127,6 +186,8 @@ function Register({ onLogin }) {
             <input
               type="email"
               name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Email Address"
               aria-label="Email address"
               autoComplete="email"
@@ -152,6 +213,8 @@ function Register({ onLogin }) {
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
               aria-label="Password"
               autoComplete="new-password"
@@ -162,7 +225,7 @@ function Register({ onLogin }) {
               type="button"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
               onClick={() => setShowPassword((visible) => !visible)}
-              className="rounded p-0.5 hover:bg-slate-100"
+              className="rounded p-0.5 hover:bg-slate-100 cursor-pointer"
             >
               <svg
                 aria-hidden="true"
@@ -197,6 +260,8 @@ function Register({ onLogin }) {
             <input
               type="password"
               name="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm Password"
               aria-label="Confirm password"
               autoComplete="new-password"
@@ -209,6 +274,8 @@ function Register({ onLogin }) {
             <input
               type="checkbox"
               name="termsAccepted"
+              checked={termsAccepted}
+              onChange={(e) => setTermsAccepted(e.target.checked)}
               required
               className="h-4 w-4 accent-green-700"
             />
@@ -219,9 +286,10 @@ function Register({ onLogin }) {
 
           <button
             type="submit"
-            className="mt-0.5 flex min-h-[47px] items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-green-700 to-green-800 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-px hover:from-green-800 hover:to-green-900 cursor-pointer"
+            disabled={isLoading}
+            className="mt-0.5 flex min-h-[47px] items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-green-700 to-green-800 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-px hover:from-green-800 hover:to-green-900 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
           >
-            Register
+            {isLoading ? 'Creating Account...' : 'Register'}
             <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 fill-none stroke-current">
               <path d="M3.5 10h12m-5-5 5 5-5 5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" />
             </svg>
@@ -232,15 +300,15 @@ function Register({ onLogin }) {
           Already have an account?{' '}
           <button
             type="button"
-            onClick={onLogin}
-            className="font-semibold text-green-800 hover:underline"
+            onClick={onLogin ? onLogin : () => navigate('/login')}
+            className="font-semibold text-green-800 hover:underline cursor-pointer"
           >
             Login
           </button>
         </p>
       </section>
     </main>
-  )
+  );
 }
 
-export default Register
+export default Register;

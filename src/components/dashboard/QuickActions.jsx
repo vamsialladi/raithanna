@@ -1,61 +1,80 @@
-import { Search, Truck, Phone, BarChart2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useMarketplace } from '../../context/MarketplaceContext';
+import {
+  LeafIcon,
+  TractorIcon,
+  UserIcon,
+  SackIcon,
+} from '../common/Icons';
+export { BuyerQuickActions } from './BuyerQuickActions';
 
-export const QuickActions = () => {
-  const navigate = useNavigate();
+export default function QuickActions() {
+  const { navigateTo } = useMarketplace();
 
-  const ACTIONS = [
+  const actions = [
     {
-      title: 'Search Produce',
-      icon: Search,
-      path: '/buyer/products',
-      color: 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100/70 border-emerald-100'
+      id: 'find-land',
+      label: 'Find Land For Lease',
+      icon: LeafIcon,
+      route: 'land-marketplace',
+      bg: '#eaf8ec',
+      color: '#15803d',
     },
     {
-      title: 'Track Order',
-      icon: Truck,
-      path: '/buyer/orders/RM-84920',
-      color: 'text-emerald-800 bg-emerald-50 hover:bg-emerald-100/70 border-emerald-100'
+      id: 'equipment',
+      label: 'Book Equipment & Machinery',
+      icon: TractorIcon,
+      route: 'equipment',
+      bg: '#eaf8ec',
+      color: '#15803d',
     },
     {
-      title: 'Contact Farmer',
-      icon: Phone,
-      path: '/buyer/messages',
-      color: 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100/70 border-emerald-100'
+      id: 'services',
+      label: 'Request Services (Soil Testing, etc.)',
+      icon: UserIcon,
+      route: 'services',
+      bg: '#eaf8ec',
+      color: '#15803d',
     },
     {
-      title: 'View Reports',
-      icon: BarChart2,
-      path: '/buyer/price-trends',
-      color: 'text-emerald-800 bg-emerald-50 hover:bg-emerald-100/70 border-emerald-100'
-    }
+      id: 'prices',
+      label: 'Check Market Prices',
+      icon: SackIcon,
+      route: 'market-prices',
+      bg: '#eaf8ec',
+      color: '#15803d',
+    },
   ];
 
   return (
-    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-xs flex flex-col justify-between">
-      <div>
-        <h3 className="text-sm font-bold text-gray-900 tracking-tight mb-3">Quick Actions</h3>
+    <div className="rm-right-card">
+      <div className="rm-panel-header" style={{ marginBottom: '10px' }}>
+        <h2 className="rm-panel-title">Quick Actions</h2>
+      </div>
 
-        <div className="grid grid-cols-2 gap-2.5">
-          {ACTIONS.map((action) => {
-            const Icon = action.icon;
-            return (
-              <button
-                key={action.title}
-                onClick={() => navigate(action.path)}
-                className={`flex flex-col items-center justify-center p-2.5 rounded-xl border text-center transition-all hover:scale-[1.02] shadow-2xs ${action.color}`}
+      <div className="rm-quick-actions-2x2">
+        {actions.map((act) => {
+          const Icon = act.icon;
+          return (
+            <div
+              key={act.id}
+              className="rm-quick-action-box"
+              onClick={() => navigateTo(act.route)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && navigateTo(act.route)}
+            >
+              <div
+                className="rm-quick-action-box-icon"
+                style={{ background: act.bg, color: act.color }}
               >
-                <Icon className="w-5 h-5 mb-1 text-[#198754]" />
-                <span className="text-[11px] font-bold text-gray-800 leading-tight">
-                  {action.title}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+                <Icon className="w-5 h-5" />
+              </div>
+              <div className="rm-quick-action-box-lbl">{act.label}</div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
-};
-
-export default QuickActions;
+}
