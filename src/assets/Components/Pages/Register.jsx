@@ -1,12 +1,13 @@
 import { useState } from 'react'
 const roles = ['Farmer', 'Landlord Farmer', 'Tenant Farmer', 'Buyer', 'Service Provider']
 
-function Register({ onLogin }) {
+function Register({ onLogin, onSuccess }) {
   const [role, setRole] = useState('Farmer')
   const [showPassword, setShowPassword] = useState(false)
 
   function handleSubmit(event) {
     event.preventDefault()
+    onSuccess(role)
   }
 
   return (

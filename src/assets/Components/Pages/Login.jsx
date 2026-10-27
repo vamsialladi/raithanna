@@ -56,12 +56,13 @@ function FieldIcon({ name }) {
   )
 }
 
-function Login({ onRegister }) {
+function Login({ onRegister, onSuccess }) {
   const [role, setRole] = useState('Farmer')
   const [showPassword, setShowPassword] = useState(false)
 
   function handleSubmit(event) {
     event.preventDefault()
+    onSuccess(role)
   }
 
   return (
