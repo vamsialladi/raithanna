@@ -6,7 +6,7 @@ import { useMarketplace } from '../../../context/MarketplaceContext';
 import { useTranslation } from '../../../context/LanguageContext';
 import { USER_ROLES, ROLE_DEFINITIONS, normalizeRole } from '../../../constants/roles';
 
-function Register({ onLogin, onRegisterSuccess }) {
+function Register({ onLogin, onRegisterSuccess, onSuccess }) {
   const navigate = useNavigate();
   const marketplace = useMarketplace ? useMarketplace() : null;
   const auth = useAuth ? useAuth() : null;
@@ -43,6 +43,8 @@ function Register({ onLogin, onRegisterSuccess }) {
       const derivedName = `${firstName} ${lastName}`.trim() || 'New User';
       const normRole = normalizeRole(role);
 
+      window.sessionStorage.setItem('accountRole', normRole === USER_ROLES.SERVICE_PROVIDER ? 'Service Provider' : normRole);
+
       if (onRegisterSuccess) {
         onRegisterSuccess({
           name: derivedName,
@@ -51,6 +53,9 @@ function Register({ onLogin, onRegisterSuccess }) {
           email,
           mobile,
         });
+      }
+      if (onSuccess) {
+        onSuccess(normRole === USER_ROLES.SERVICE_PROVIDER ? 'Service Provider' : normRole);
       }
 
       if (normRole === USER_ROLES.BUYER) {
@@ -62,6 +67,9 @@ function Register({ onLogin, onRegisterSuccess }) {
       } else if (normRole === USER_ROLES.LANDLORD_FARMER) {
         if (showToast) showToast(`Registration successful! Welcome to Landlord Farmland Portal, ${derivedName}.`);
         navigate('/landlord', { replace: true });
+      } else if (normRole === USER_ROLES.SERVICE_PROVIDER) {
+        if (showToast) showToast(`Registration successful! Welcome to Service Provider Hub, ${derivedName}.`);
+        navigate('/service-dashboard', { replace: true });
       } else if (normRole === USER_ROLES.TENANT_FARMER) {
         if (marketplace?.login) {
           await marketplace.login({

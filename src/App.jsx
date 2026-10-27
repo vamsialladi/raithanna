@@ -11,6 +11,9 @@ import MainLandingPage from './pages/MainLandingPage';
 // Landlord Farmland Dashboard
 import LandlordDashboard from './assets/Components/Dashboard/LandlordDashboard';
 
+// Service Provider Hub
+import ServiceDashboard from './assets/Images/ServiceProvider/ServiceDsahboard';
+
 // Tenant Farmer Portal & Authentication
 import TenantFarmerLayout from './components/layout/TenantFarmerLayout';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -55,7 +58,42 @@ function App() {
                   <Route path="/login" element={<MainLandingPage initialAuthMode="login" />} />
                   <Route path="/register" element={<MainLandingPage initialAuthMode="register" />} />
 
-                  {/* 2. Landlord Farmland Dashboard Routes */}
+                  {/* 2. Service Provider Hub Routes */}
+                  <Route
+                    path="/service-dashboard"
+                    element={
+                      <ServiceDashboard
+                        onLogout={() => {
+                          window.sessionStorage.removeItem('accountRole');
+                          window.location.href = '/';
+                        }}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/service-provider/*"
+                    element={
+                      <ServiceDashboard
+                        onLogout={() => {
+                          window.sessionStorage.removeItem('accountRole');
+                          window.location.href = '/';
+                        }}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/service-provider"
+                    element={
+                      <ServiceDashboard
+                        onLogout={() => {
+                          window.sessionStorage.removeItem('accountRole');
+                          window.location.href = '/';
+                        }}
+                      />
+                    }
+                  />
+
+                  {/* 3. Landlord Farmland Dashboard Routes */}
                   <Route
                     path="/landlord/*"
                     element={
@@ -77,7 +115,7 @@ function App() {
                     }
                   />
 
-                  {/* 3. Tenant Farmer Dashboard Routes (Protected) */}
+                  {/* 4. Tenant Farmer Dashboard Routes (Protected) */}
                   <Route
                     path="/dashboard/*"
                     element={
@@ -103,7 +141,7 @@ function App() {
                     }
                   />
 
-                  {/* 4. Buyer Portal with Shared Layout */}
+                  {/* 5. Buyer Portal with Shared Layout */}
                   <Route path="/buyer" element={<BuyerLayout />}>
                     <Route index element={<Navigate to="/buyer/dashboard" replace />} />
                     <Route path="dashboard" element={<BuyerDashboard />} />
@@ -126,7 +164,7 @@ function App() {
                     <Route path="settings" element={<SettingsPage />} />
                   </Route>
 
-                  {/* 5. Fallback */}
+                  {/* 6. Fallback */}
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </ToastProvider>

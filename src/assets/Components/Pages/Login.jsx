@@ -41,7 +41,7 @@ function FieldIcon({ name }) {
   if (name === 'eye') {
     return (
       <svg {...sharedProps}>
-        <path d="M2.5 12s3.4-5.3 9.5-5.3 9.5 5.3 9.5 5.3-3.4 5.3-9.5 5.3S2.5 12 2.5 12Z" />
+        <path d="M2.5 12s3.4-5.3 9.5-5.3 9.5 5.3-3.4 5.3-9.5 5.3S2.5 12 2.5 12Z" />
         <circle cx="12" cy="12" r="2.4" />
       </svg>
     );
@@ -55,7 +55,7 @@ function FieldIcon({ name }) {
   );
 }
 
-function Login({ onRegister, onLoginSuccess }) {
+function Login({ onRegister, onLoginSuccess, onSuccess }) {
   const marketplace = useMarketplace ? useMarketplace() : null;
   const auth = useAuth ? useAuth() : null;
   const showToast = useToast ? useToast() : null;
@@ -126,6 +126,9 @@ function Login({ onRegister, onLoginSuccess }) {
       if (marketplace?.setUser) marketplace.setUser(authenticatedUser);
       if (marketplace?.setIsAuthenticated) marketplace.setIsAuthenticated(true);
 
+      // Save role in session storage for service provider integration
+      window.sessionStorage.setItem('accountRole', authorizedRole === USER_ROLES.SERVICE_PROVIDER ? 'Service Provider' : authorizedRole);
+
       // Sync with AuthContext for Buyer sessions
       if (auth?.login) {
         auth.login({
@@ -141,6 +144,9 @@ function Login({ onRegister, onLoginSuccess }) {
           roleKey: authorizedRole === USER_ROLES.LANDLORD_FARMER ? 'roleLandlord' : 'roleOther',
         });
       }
+      if (onSuccess) {
+        onSuccess(authorizedRole === USER_ROLES.SERVICE_PROVIDER ? 'Service Provider' : authorizedRole);
+      }
 
       // Role routing
       if (authorizedRole === USER_ROLES.BUYER) {
@@ -149,14 +155,14 @@ function Login({ onRegister, onLoginSuccess }) {
       } else if (authorizedRole === USER_ROLES.LANDLORD_FARMER) {
         if (showToast) showToast(`Welcome back, ${authenticatedUser.farmerName}! Redirecting to Landlord Dashboard...`);
         navigate('/landlord', { replace: true });
+      } else if (authorizedRole === USER_ROLES.SERVICE_PROVIDER) {
+        if (showToast) showToast(`Welcome back, ${authenticatedUser.farmerName}! Redirecting to Service Provider Hub...`);
+        navigate('/service-dashboard', { replace: true });
       } else if (authorizedRole === USER_ROLES.TENANT_FARMER) {
         if (showToast) showToast(`Welcome back, ${authenticatedUser.farmerName}!`);
         navigate(from, { replace: true });
       } else {
-        // Service Provider / General Farmer
-        if (marketplace?.setActiveModule) {
-          if (authorizedRole === USER_ROLES.SERVICE_PROVIDER) marketplace.setActiveModule('service-provider');
-        }
+        // General Farmer
         if (showToast) showToast(`Welcome back, ${authenticatedUser.farmerName}!`);
         navigate('/dashboard', { replace: true });
       }
@@ -287,7 +293,7 @@ function Login({ onRegister, onLoginSuccess }) {
                 type="button"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
                 onClick={() => setShowPassword((visible) => !visible)}
-                className="rounded p-0.5 hover:bg-slate-100"
+                className="rounded p-0.5 hover:bg-slate-100 cursor-pointer"
               >
                 <FieldIcon name="eye" />
               </button>
