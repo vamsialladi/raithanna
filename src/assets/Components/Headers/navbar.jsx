@@ -129,7 +129,7 @@ function Navbar({ onAuthOpen, onHome, currentUser, onDashboardOpen }) {
                   if (onDashboardOpen) onDashboardOpen()
                 }}
               >
-                Dashboard ({currentUser.name})
+                {currentUser.roleKey === 'roleLandlord' ? t('dashNavDashboard') : t(currentUser.roleKey || 'roleFarmer')} ({currentUser.name})
               </button>
             ) : (
               <button

@@ -211,6 +211,20 @@ export const translations = {
     dashLabelApplied: 'Applied',
     dashBtnClose: 'Close',
     dashBtnAcceptTenant: 'Accept Tenant',
+
+    // Under Development Keys
+    devTitle: 'Portal Under Development',
+    devComingSoon: 'Coming Soon',
+    devBadge: 'Under Active Cultivation',
+    devDescPrefix: 'We are currently building and optimizing the dedicated digital experience for',
+    devDescSuffix: 'Stay tuned! This module will launch in our next release with smart tools and real-time insights.',
+    devBackHome: 'Back to Home',
+    devTryLandlord: 'Explore Landlord Dashboard (Demo)',
+    devSignOut: 'Sign Out / Switch Role',
+    devFeaturesPlanned: 'Features Planned for This Portal',
+    devFeature1: 'Smart AI Crop Advisory & Soil Diagnostics',
+    devFeature2: 'Direct Verified Marketplace & Escrow Contracts',
+    devFeature3: 'Real-time Telemetry, Weather & Market MSP Tracking',
   },
 
   తెలుగు: {
@@ -423,6 +437,20 @@ export const translations = {
     dashLabelApplied: 'దరఖాస్తు తేది',
     dashBtnClose: 'మూసివేయి',
     dashBtnAcceptTenant: 'కౌలుదారుని ఆమోదించండి',
+
+    // Under Development Keys
+    devTitle: 'పోర్టల్ అభివృద్ధిలో ఉంది',
+    devComingSoon: 'త్వరలో అందుబాటులోకి వస్తుంది',
+    devBadge: 'అభివృద్ధి ప్రక్రియలో ఉంది',
+    devDescPrefix: 'మేము ప్రస్తుతం ప్రత్యేకమైన డిజిటల్ సేవలను సిద్ధం చేస్తున్నాము:',
+    devDescSuffix: 'త్వరలోనే సరికొత్త సాధనాలు, సలహాలు మరియు ప్రత్యక్ష సేవల తో మీ ముందుకు వస్తుంది.',
+    devBackHome: 'హోమ్‌కు వెళ్లండి',
+    devTryLandlord: 'భూయజమాని డ్యాష్‌బోర్డ్ చూడండి (డెమో)',
+    devSignOut: 'లాగౌట్ / పాత్ర మార్చండి',
+    devFeaturesPlanned: 'ఈ పోర్టల్ కోసం రాబోయే ప్రత్యేక సేవలు',
+    devFeature1: 'ఏఐ పంట సలహాలు మరియు నేల పరీక్ష ఫలితాలు',
+    devFeature2: 'ధృవీకరించబడిన మార్కెట్ మరియు సురక్షిత ఎస్క్రో ఒప్పందాలు',
+    devFeature3: 'వాతావరణ హెచ్చరికలు మరియు ప్రత్యక్ష మార్కెట్ ధరలు',
   },
 
   ಕನ್ನಡ: {
@@ -635,6 +663,20 @@ export const translations = {
     dashLabelApplied: 'ಅರ್ಜಿ ಸಲ್ಲಿಸಲಾಗಿದೆ',
     dashBtnClose: 'ಮುಚ್ಚಿ',
     dashBtnAcceptTenant: 'ಗೇಣಿದಾರರನ್ನು ಒಪ್ಪಿಕೊಳ್ಳಿ',
+
+    // Under Development Keys
+    devTitle: 'ಪೋರ್ಟಲ್ ಅಭಿವೃದ್ಧಿಯಲ್ಲಿದೆ',
+    devComingSoon: 'ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ',
+    devBadge: 'ಸಕ್ರಿಯ ಅಭಿವೃದ್ಧಿಯಲ್ಲಿದೆ',
+    devDescPrefix: 'ನಾವು ಪ್ರಸ್ತುತ ಮೀಸಲಾದ ಡಿಜಿಟಲ್ ಅನುಭವವನ್ನು ನಿರ್ಮಿಸುತ್ತಿದ್ದೇವೆ:',
+    devDescSuffix: 'ಸ್ಮಾರ್ಟ್ ಪರಿಕರಗಳು ಮತ್ತು ನೈಜ-ಸಮಯದ ಒಳನೋಟಗಳೊಂದಿಗೆ ಮುಂದಿನ ಆವೃತ್ತಿಯಲ್ಲಿ ಲಭ್ಯವಾಗಲಿದೆ.',
+    devBackHome: 'ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ',
+    devTryLandlord: 'ಭೂಮಾಲೀಕರ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ವೀಕ್ಷಿಸಿ (ಡೆಮೊ)',
+    devSignOut: 'ಸೈನ್ ಔಟ್ / ಪಾತ್ರ ಬದಲಾಯಿಸಿ',
+    devFeaturesPlanned: 'ಈ ಪೋರ್ಟಲ್‌ಗೆ ಯೋಜಿಸಲಾದ ವೈಶಿಷ್ಟ್ಯಗಳು',
+    devFeature1: 'ಸ್ಮಾರ್ಟ್ ಕೃಷಿ ಸಲಹೆ ಮತ್ತು ಮಣ್ಣಿನ ಪರೀಕ್ಷೆ',
+    devFeature2: 'ನೇರ ಮಾರುಕಟ್ಟೆ ಮತ್ತು ಸುರಕ್ಷಿತ ಎಸ್ಕ್ರೋ ಒಪ್ಪಂದಗಳು',
+    devFeature3: 'ಹವಾಮಾನ ಮುನ್ಸೂಚನೆ ಮತ್ತು ಮಾರುಕಟ್ಟೆ ದರಗಳ ಮಾಹಿತಿ',
   },
 
   हिन्दी: {
@@ -847,6 +889,20 @@ export const translations = {
     dashLabelApplied: 'आवेदन किया',
     dashBtnClose: 'बंद करें',
     dashBtnAcceptTenant: 'किरायेदार को स्वीकार करें',
+
+    // Under Development Keys
+    devTitle: 'पोर्टल निर्माणाधीन है',
+    devComingSoon: 'जल्द आ रहा है',
+    devBadge: 'सक्रिय विकास में',
+    devDescPrefix: 'हम वर्तमान में समर्पित डिजिटल अनुभव का निर्माण कर रहे हैं:',
+    devDescSuffix: 'स्मार्ट टूल्स और रीयल-टाइम अंतर्दृष्टि के साथ यह मॉड्यूल हमारे अगले रिलीज में उपलब्ध होगा।',
+    devBackHome: 'होम पर वापस जाएं',
+    devTryLandlord: 'भूस्वामी डैशबोर्ड देखें (डेमो)',
+    devSignOut: 'साइन आउट / भूमिका बदलें',
+    devFeaturesPlanned: 'इस पोर्टल के लिए नियोजित सुविधाएं',
+    devFeature1: 'स्मार्ट फसल परामर्श और मृदा निदान',
+    devFeature2: 'सत्यापित डिजिटल बाजार और सुरक्षित एस्क्रो अनुबंध',
+    devFeature3: 'वास्तविक समय मौसम और बाजार एमएसपी ट्रैकिंग',
   },
 
   தமிழ்: {
@@ -1059,6 +1115,20 @@ export const translations = {
     dashLabelApplied: 'விண்ணப்பித்தது',
     dashBtnClose: 'மூடு',
     dashBtnAcceptTenant: 'குத்தகைதாரரை ஏற்கவும்',
+
+    // Under Development Keys
+    devTitle: 'தளம் உருவாக்கத்தில் உள்ளது',
+    devComingSoon: 'விரைவில் வருகிறது',
+    devBadge: 'செயலில் உள்ள வளர்ச்சி',
+    devDescPrefix: 'நாங்கள் தற்போது பிரத்யேக டிஜிட்டல் அனுபவத்தை உருவாக்கி வருகிறோம்:',
+    devDescSuffix: 'ஸ்மார்ட் கருவிகள் மற்றும் நிகழ்நேர நுண்ணறிவுகளுடன் இது விரைவில் தொடங்கப்படும்.',
+    devBackHome: 'முகப்புக்குத் திரும்பு',
+    devTryLandlord: 'நில உரிமையாளர் முகப்பு பலகையைக் காண்க (டெமோ)',
+    devSignOut: 'வெளியேறு / பாத்திரத்தை மாற்று',
+    devFeaturesPlanned: 'இந்த தளத்திற்கான திட்டமிடப்பட்ட அம்சங்கள்',
+    devFeature1: 'ஸ்மார்ட் பயிர் ஆலோசனை மற்றும் மண் பரிசோதனை',
+    devFeature2: 'நேரடி சந்தை மற்றும் பாதுகாப்பான எஸ்க்ரோ ஒப்பந்தங்கள்',
+    devFeature3: 'வானிலை எச்சரிக்கை மற்றும் நேரடி சந்தை விலை விவரங்கள்',
   },
 }
 

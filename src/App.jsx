@@ -5,7 +5,7 @@ import Landing from './assets/Components/Pages/Landing.jsx'
 import RegisterPage from './assets/Components/Pages/Register.jsx'
 import LoginPage from './assets/Components/Pages/Login.jsx'
 import LandlordDashboard from './assets/Components/Dashboard/LandlordDashboard.jsx'
-import { LanguageProvider } from './context/LanguageContext.jsx'
+import UnderDevelopment from './assets/Components/Pages/UnderDevelopment.jsx'
 import './App.css'
 
 function App() {
@@ -33,14 +33,39 @@ function App() {
     }
   }
 
+  const handleSwitchToLandlord = () => {
+    if (currentUser) {
+      setCurrentUser({
+        ...currentUser,
+        roleKey: 'roleLandlord',
+        role: 'Landlord Farmer',
+      })
+      setShowDashboard(true)
+    }
+  }
+
   // If in dashboard view and user is logged in
   if (showDashboard && currentUser) {
-    return (
-      <LandlordDashboard
-        user={currentUser}
-        onLogout={handleLogout}
-      />
-    )
+    if (currentUser.roleKey === 'roleLandlord') {
+      return (
+        <LandlordDashboard
+          user={currentUser}
+          onLogout={handleLogout}
+        />
+      )
+    } else {
+      return (
+        <UnderDevelopment
+          user={currentUser}
+          onLogout={handleLogout}
+          onHome={() => {
+            setShowDashboard(false)
+            setShowAuthPage(false)
+          }}
+          onSwitchToLandlord={handleSwitchToLandlord}
+        />
+      )
+    }
   }
 
   return (

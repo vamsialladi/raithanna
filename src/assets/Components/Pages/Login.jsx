@@ -71,13 +71,24 @@ function Login({ onRegister, onLoginSuccess }) {
   function handleSubmit(event) {
     event.preventDefault()
     const formData = new FormData(event.target)
-    const email = formData.get('email') || 'ramu.naik@raithanna.org'
+    const rawInput = formData.get('email') || ''
+    const defaultNames = {
+      roleLandlord: 'Ramu Naik',
+      roleTenant: 'Ravi Teja',
+      roleFarmer: 'Suresh Kumar',
+      roleBuyer: 'Anand Reddy',
+      roleServiceProvider: 'Kiran Agri Services',
+    }
+    const displayName = rawInput && !rawInput.includes('@') && isNaN(rawInput)
+      ? rawInput
+      : defaultNames[selectedRoleKey] || 'Ramu Naik'
+
     if (onLoginSuccess) {
       onLoginSuccess({
-        name: 'Ramu Naik',
+        name: displayName,
         roleKey: selectedRoleKey,
         role: roleDefinitions.find((r) => r.key === selectedRoleKey)?.fallback || 'Landlord Farmer',
-        email,
+        email: rawInput || `${displayName.toLowerCase().replace(/\s+/g, '.')}@raithanna.org`,
         location: 'Hyderabad, Telangana',
       })
     }

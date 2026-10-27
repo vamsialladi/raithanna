@@ -17,8 +17,15 @@ function Register({ onLogin, onRegisterSuccess }) {
   function handleSubmit(event) {
     event.preventDefault()
     const formData = new FormData(event.target)
-    const fullName = formData.get('fullName') || 'Ramu Naik'
-    const email = formData.get('email') || 'ramu.naik@raithanna.org'
+    const defaultNames = {
+      roleLandlord: 'Ramu Naik',
+      roleTenant: 'Ravi Teja',
+      roleFarmer: 'Suresh Kumar',
+      roleBuyer: 'Anand Reddy',
+      roleServiceProvider: 'Kiran Agri Services',
+    }
+    const fullName = formData.get('fullName') || defaultNames[role] || 'Ramu Naik'
+    const email = formData.get('email') || `${fullName.toLowerCase().replace(/\s+/g, '.')}@raithanna.org`
     if (onRegisterSuccess) {
       onRegisterSuccess({
         name: fullName,
