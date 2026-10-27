@@ -1,13 +1,55 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useMarketplace } from '../../../context/MarketplaceContext'
+import { USER_ROLES, normalizeRole } from '../../../constants/roles'
+
 const roles = ['Farmer', 'Landlord Farmer', 'Tenant Farmer', 'Buyer', 'Service Provider']
 
 function Register({ onLogin }) {
+  const navigate = useNavigate()
+  const { login } = useMarketplace()
   const [role, setRole] = useState('Farmer')
   const [showPassword, setShowPassword] = useState(false)
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [email, setEmail] = useState('')
+  const [mobile, setMobile] = useState('')
+  const [password, setPassword] = useState('')
+  const [village, setVillage] = useState('')
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
+    setError('')
+    setIsLoading(true)
+    try {
+      const derivedName = `${firstName} ${lastName}`.trim() || 'New Farmer'
+      const normRole = normalizeRole(role)
+
+      if (normRole === USER_ROLES.TENANT_FARMER) {
+        await login({
+          email: email || mobile || 'farmer@rythumitra.org',
+          password: password || '1234',
+          role: USER_ROLES.TENANT_FARMER,
+          remember: true,
+        })
+        navigate('/dashboard', { replace: true })
+      } else {
+        navigate('/login', {
+          state: {
+            roleError: 'Registration successful! Login for this role is not yet available. Please select Tenant Farmer to continue.',
+          },
+          replace: true,
+        })
+      }
+    } catch (err) {
+      setError(err.message || 'Registration failed.')
+    } finally {
+      setIsLoading(false)
+    }
   }
+
 
   return (
     <main className="auth-page grid min-h-[calc(100svh-78px)] place-items-center bg-[radial-gradient(ellipse_at_10%_100%,rgba(196,220,151,0.18),transparent_30%),#f5f8f5] px-4 py-10 sm:px-6">
@@ -204,7 +246,7 @@ function Register({ onLogin }) {
           Already have an account?{' '}
           <button
             type="button"
-            onClick={onLogin}
+            onClick={onLogin ? onLogin : () => navigate('/login')}
             className="font-semibold text-green-800 hover:underline"
           >
             Login

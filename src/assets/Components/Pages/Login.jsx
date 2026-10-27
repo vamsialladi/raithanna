@@ -1,12 +1,8 @@
-import { useState } from 'react'
-
-const roles = ['Farmer', 'Landlord Farmer', 'Tenant Farmer', 'Buyer', 'Service Provider']
-
-function getRoleIcon(role) {
-  if (role === 'Farmer' || role === 'Landlord Farmer' || role === 'Tenant Farmer') return '◈'
-  if (role === 'Buyer') return '🛒'
-  return '♟'
-}
+import { useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useMarketplace } from '../../../context/MarketplaceContext'
+import { authService } from '../../../services/authService'
+import { USER_ROLES, ROLE_DEFINITIONS, normalizeRole } from '../../../constants/roles'
 
 function LeafMark() {
   return (
@@ -56,13 +52,96 @@ function FieldIcon({ name }) {
   )
 }
 
-function Login({ onRegister }) {
-  const [role, setRole] = useState('Farmer')
-  const [showPassword, setShowPassword] = useState(false)
+function Login({ onRegister, onLoginSuccess }) {
+  const { user, setUser, setIsAuthenticated, isAuthenticated } = useMarketplace()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from?.pathname || '/dashboard'
+  const roleAccessError = location.state?.roleError
 
-  function handleSubmit(event) {
+  // Role state initialized to TENANT_FARMER
+  const [role, setRole] = useState(USER_ROLES.TENANT_FARMER)
+  const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [remember, setRemember] = useState(false)
+  const [error, setError] = useState('')
+  const [roleNotice, setRoleNotice] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+
+  // Redirect if already authenticated as Tenant Farmer
+  useEffect(() => {
+    if (
+      isAuthenticated &&
+      user &&
+      normalizeRole(user.role || user.farmerType) === USER_ROLES.TENANT_FARMER
+    ) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [isAuthenticated, user, navigate])
+
+  async function handleSubmit(event) {
     event.preventDefault()
+    setError('')
+    setRoleNotice('')
+
+    // 1. Validate email/mobile and password required fields
+    if (!email.trim() && !password.trim()) {
+      setError('Please enter your email or mobile number, and password.')
+      return
+    }
+    if (!email.trim()) {
+      setError('Please enter your email or mobile number.')
+      return
+    }
+    if (!password.trim()) {
+      setError('Please enter your password.')
+      return
+    }
+    if (password.trim().length < 4) {
+      setError('Password must be at least 4 characters long.')
+      return
+    }
+
+    setIsLoading(true)
+
+    try {
+      // 2. Authenticate using existing authentication mechanism
+      // Confirms valid credentials and compares selected role with account's authorized role
+      const authenticatedUser = await authService.authenticate({
+        email: email.trim(),
+        password: password.trim(),
+        selectedRole: role,
+      })
+
+      // 3. Check selected role against authenticated user's authorized role
+      const authorizedRole = normalizeRole(authenticatedUser.role || authenticatedUser.farmerType)
+
+      // 4. If the role is TENANT_FARMER: Navigate to Tenant Farmer Dashboard
+      if (authorizedRole === USER_ROLES.TENANT_FARMER) {
+        authService.saveSession(authenticatedUser, remember)
+        setUser(authenticatedUser)
+        setIsAuthenticated(true)
+
+        if (onLoginSuccess) {
+          onLoginSuccess(authenticatedUser)
+        } else {
+          navigate(from, { replace: true })
+        }
+      } else {
+        // 5. Else: Do not navigate to the Tenant Farmer Dashboard.
+        // Show role-specific message
+        setRoleNotice('Login for this role is not yet available. Please select Tenant Farmer to continue.')
+      }
+    } catch (err) {
+      // Show existing authentication error
+      setError(err.message || 'Login failed. Please verify your credentials.')
+    } finally {
+      setIsLoading(false)
+    }
   }
+
+  const activeErrorMessage = error || roleAccessError
 
   return (
     <main className="auth-page grid min-h-[calc(100svh-78px)] place-items-center bg-[radial-gradient(ellipse_at_10%_100%,rgba(196,220,151,0.18),transparent_30%),#f5f8f5] px-4 py-10 sm:px-6">
@@ -87,36 +166,67 @@ function Login({ onRegister }) {
           <p className="mt-2 text-base text-slate-500">Sign in to your RythuMitra account</p>
         </div>
 
+        {/* Role Selection Group */}
         <div
           role="group"
           aria-label="Select account type"
           className="mb-7 grid grid-cols-2 gap-1.5 rounded-xl border border-slate-200 p-1.5 sm:grid-cols-3"
         >
-          {roles.map((item) => (
+          {ROLE_DEFINITIONS.map((item) => (
             <button
-              key={item}
+              key={item.id}
               type="button"
-              aria-pressed={role === item}
-              onClick={() => setRole(item)}
+              aria-pressed={role === item.id}
+              onClick={() => {
+                setRole(item.id)
+                setError('')
+                setRoleNotice('')
+              }}
               className={`flex min-h-12 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs text-center transition-colors ${
-                role === item
-                  ? 'bg-green-700 text-white shadow-sm'
+                role === item.id
+                  ? 'bg-green-700 text-white shadow-sm font-semibold'
                   : 'text-slate-700 hover:bg-green-50'
               }`}
             >
-              <span aria-hidden="true">{getRoleIcon(item)}</span>
-              {item}
+              <span aria-hidden="true">{item.icon}</span>
+              {item.label}
             </button>
           ))}
         </div>
 
         <form className="grid gap-5" onSubmit={handleSubmit}>
+          {/* Error Message Alert */}
+          {activeErrorMessage && (
+            <div
+              role="alert"
+              className="rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-semibold text-red-700 animate-fadeIn"
+            >
+              {activeErrorMessage}
+            </div>
+          )}
+
+          {/* Role Status Notice for Unimplemented Roles */}
+          {roleNotice && (
+            <div
+              role="status"
+              className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs font-semibold text-amber-800 animate-fadeIn"
+            >
+              {roleNotice}
+            </div>
+          )}
+
+          {/* Email / Mobile Field */}
           <label className="grid gap-1">
             <span className="flex min-h-[54px] items-center gap-3 rounded-lg border border-slate-200 px-4 transition focus-within:border-green-700 focus-within:ring-2 focus-within:ring-green-700/10">
               <FieldIcon name="user" />
               <input
                 type="text"
-                name="email" 
+                name="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  if (error) setError('')
+                }}
                 placeholder="Email or Mobile Number"
                 aria-label="Email or mobile number"
                 autoComplete="username"
@@ -129,12 +239,18 @@ function Login({ onRegister }) {
             </span>
           </label>
 
+          {/* Password Field */}
           <label className="grid gap-1">
             <span className="flex min-h-[54px] items-center gap-3 rounded-lg border border-slate-200 px-4 transition focus-within:border-green-700 focus-within:ring-2 focus-within:ring-green-700/10">
               <FieldIcon name="lock" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value)
+                  if (error) setError('')
+                }}
                 placeholder="Password"
                 aria-label="Password"
                 autoComplete="current-password"
@@ -153,9 +269,16 @@ function Login({ onRegister }) {
             <span className="text-xs leading-relaxed text-slate-500">Enter your password</span>
           </label>
 
+          {/* Remember Me and Forgot Password */}
           <div className="flex items-center justify-between text-sm text-slate-800">
             <label className="inline-flex cursor-pointer items-center gap-1.5">
-              <input type="checkbox" name="remember" className="h-4 w-4 accent-green-700" />
+              <input
+                type="checkbox"
+                name="remember"
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
+                className="h-4 w-4 accent-green-700"
+              />
               <span>Remember me</span>
             </label>
             <button type="button" className="font-semibold text-green-800 hover:underline">
@@ -163,11 +286,13 @@ function Login({ onRegister }) {
             </button>
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
-            className="mt-1 flex min-h-[54px] items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-green-700 to-green-800 text-base font-semibold text-white shadow-sm transition hover:-translate-y-px hover:from-green-800 hover:to-green-900"
+            disabled={isLoading}
+            className="mt-1 flex min-h-[54px] items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-green-700 to-green-800 text-base font-semibold text-white shadow-sm transition hover:-translate-y-px hover:from-green-800 hover:to-green-900 disabled:opacity-75 disabled:cursor-not-allowed"
           >
-            Login
+            {isLoading ? 'Signing In...' : 'Login'}
             <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 fill-none stroke-current">
               <path d="M3.5 10h12m-5-5 5 5-5 5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" />
             </svg>
@@ -178,7 +303,7 @@ function Login({ onRegister }) {
           Don&apos;t have an account?{' '}
           <button
             type="button"
-            onClick={onRegister}
+            onClick={onRegister ? onRegister : () => navigate('/register')}
             className="font-semibold text-green-800 hover:underline"
           >
             Register
