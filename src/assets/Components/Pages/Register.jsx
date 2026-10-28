@@ -1,9 +1,18 @@
 import { useState } from 'react'
+import { translations } from '../../../translations.js'
 const roles = ['Farmer', 'Landlord Farmer', 'Tenant Farmer', 'Buyer', 'Service Provider']
+const roleTranslationKeys = {
+  Farmer: 'farmer',
+  'Landlord Farmer': 'landlordFarmer',
+  'Tenant Farmer': 'tenantFarmer',
+  Buyer: 'buyer',
+  'Service Provider': 'serviceProvider',
+}
 
-function Register({ onLogin }) {
+function Register({ language, onLogin }) {
   const [role, setRole] = useState('Farmer')
   const [showPassword, setShowPassword] = useState(false)
+  const t = translations[language]
 
   function handleSubmit(event) {
     event.preventDefault()
@@ -26,33 +35,33 @@ function Register({ onLogin }) {
             <path d="M5.2 13.3c5.8 2.8 10.1 7 12.9 12.4M29.7 6.7c-5.3 6.1-8.3 13-9 20.7" />
           </svg>
           <div className="grid gap-px">
-            <span className="text-[19px] font-bold leading-tight tracking-tight">RythuMitra</span>
+            <span className="text-[19px] font-bold leading-tight tracking-tight">Raithanna</span>
             <span className="text-[7px] font-medium tracking-wide text-green-950/80">
-              Farmers Today, Brighter Tomorrow
+              {t.tagline}
             </span>
           </div>
         </header>
 
         <div className="mb-6 text-center">
           <h1 id="register-title" className="text-[25px] font-bold leading-tight tracking-tight text-slate-900">
-            Create Account
+            {t.createAccount}
           </h1>
-          <p className="mt-1 text-sm text-slate-500">Join the RythuMitra community</p>
+          <p className="mt-1 text-sm text-slate-500">{t.registerSubtitle}</p>
         </div>
 
         <form className="grid gap-4" onSubmit={handleSubmit}>
           <label className="grid gap-1.5">
-            <span className="text-xs font-medium text-slate-700">Account type</span>
+            <span className="text-xs font-medium text-slate-700">{t.accountType}</span>
             <select
               name="role"
-              aria-label="Select account type"
+              aria-label={t.selectAccountType}
               value={role}
               onChange={(event) => setRole(event.target.value)}
               className="min-h-[46px] w-full rounded-lg border border-slate-200 bg-white px-3 text-xs text-slate-700 outline-none transition focus:border-green-700 focus:ring-2 focus:ring-green-700/10"
             >
               {roles.map((item) => (
                 <option key={item} value={item}>
-                  {item}
+                  {t[roleTranslationKeys[item]]}
                 </option>
               ))}
             </select>
@@ -62,8 +71,8 @@ function Register({ onLogin }) {
             <input
               type="text"
               name="firstName"
-              placeholder="First Name"
-              aria-label="First name"
+              placeholder={t.firstName}
+              aria-label={t.firstName}
               autoComplete="given-name"
               required
               className="min-w-0 flex-1 bg-transparent text-xs text-slate-800 outline-none placeholder:text-slate-500"
@@ -74,8 +83,8 @@ function Register({ onLogin }) {
             <input
               type="text"
               name="lastName"
-              placeholder="Last Name"
-              aria-label="Last name"
+              placeholder={t.lastName}
+              aria-label={t.lastName}
               autoComplete="family-name"
               required
               className="min-w-0 flex-1 bg-transparent text-xs text-slate-800 outline-none placeholder:text-slate-500"
@@ -86,8 +95,8 @@ function Register({ onLogin }) {
             <input
               type="tel"
               name="mobileNumber"
-              placeholder="Mobile Number"
-              aria-label="Mobile number"
+              placeholder={t.mobileNumber}
+              aria-label={t.mobileNumber}
               autoComplete="tel"
               inputMode="tel"
               required
@@ -99,8 +108,8 @@ function Register({ onLogin }) {
             <input
               type="email"
               name="email"
-              placeholder="Email Address"
-              aria-label="Email address"
+              placeholder={t.emailAddress}
+              aria-label={t.emailAddress}
               autoComplete="email"
               required
               className="min-w-0 flex-1 bg-transparent text-xs text-slate-800 outline-none placeholder:text-slate-500"
@@ -124,15 +133,15 @@ function Register({ onLogin }) {
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
-              placeholder="Password"
-              aria-label="Password"
+              placeholder={t.password}
+              aria-label={t.password}
               autoComplete="new-password"
               required
               className="min-w-0 flex-1 bg-transparent text-xs text-slate-800 outline-none placeholder:text-slate-500"
             />
             <button
               type="button"
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              aria-label={showPassword ? t.hidePassword : t.showPassword}
               onClick={() => setShowPassword((visible) => !visible)}
               className="rounded p-0.5 hover:bg-slate-100"
             >
@@ -152,7 +161,7 @@ function Register({ onLogin }) {
             </button>
           </label>
 
-          <label className="flex min-h-[46px] items-center gap-2.5 rounded-lg border border-slate-200 px-3 transition focus-within:border-green-700 focus-within:ring-2 focus-within:ring-green-700/10">
+          <label className="flex min-h-[46px] items-center gap-2.5 rounded-lg border border-slate-200 px-3 transition focus-within:border-green-700 focus-within:ring-2 focus-within:ring-green-700/10 ">
             <svg
               aria-hidden="true"
               viewBox="0 0 24 24"
@@ -169,15 +178,15 @@ function Register({ onLogin }) {
             <input
               type="password"
               name="confirmPassword"
-              placeholder="Confirm Password"
-              aria-label="Confirm password"
+              placeholder={t.confirmPassword}
+              aria-label={t.confirmPassword}
               autoComplete="new-password"
               required
-              className="min-w-0 flex-1 bg-transparent text-xs text-slate-800 outline-none placeholder:text-slate-500"
+              className="min-w-0 flex-1 bg-transparent text-xs text-slate-800 outline-none placeholder:text-slate-500 "
             />
           </label>
 
-          <label className="flex cursor-pointer items-center gap-2 text-xs text-slate-600">
+          <label className="flex cursor-pointer items-center gap-2 text-xs text-slate-600 cursor-pointer">
             <input
               type="checkbox"
               name="termsAccepted"
@@ -185,29 +194,30 @@ function Register({ onLogin }) {
               className="h-4 w-4 accent-green-700"
             />
             <span>
-              I agree to the <span className="font-semibold text-green-800">Terms and Conditions</span>
+              {t.termsAgreement}{' '}
+              <span className="font-semibold text-green-800">{t.termsAndConditions}</span>
             </span>
           </label>
 
           <button
             type="submit"
-            className="mt-0.5 flex min-h-[47px] items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-green-700 to-green-800 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-px hover:from-green-800 hover:to-green-900"
+            className="mt-0.5 flex min-h-[47px] items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-green-700 to-green-800 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-px hover:from-green-800 hover:to-green-900 cursor-pointer"
           >
-            Register
+            {t.register}
             <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 fill-none stroke-current">
               <path d="M3.5 10h12m-5-5 5 5-5 5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" />
             </svg>
           </button>
         </form>
 
-        <p className="mt-5 text-center text-xs text-slate-500">
-          Already have an account?{' '}
+        <p className="mt-5 text-center text-xs text-slate-500 cursor-pointer">
+          {t.alreadyHaveAccount}{' '}
           <button
             type="button"
             onClick={onLogin}
-            className="font-semibold text-green-800 hover:underline"
+            className="font-semibold text-green-800 hover:underline cursor-pointer"
           >
-            Login
+            {t.login}
           </button>
         </p>
       </section>

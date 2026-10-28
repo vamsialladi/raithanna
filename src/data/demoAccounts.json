@@ -1,0 +1,27 @@
+[
+  {
+    "role": "Farmer",
+    "email": "farmer.demo@raithanna.test",
+    "password": "FarmerDemo123!"
+  },
+  {
+    "role": "Landlord Farmer",
+    "email": "landlord.demo@raithanna.test",
+    "password": "LandlordDemo123!"
+  },
+  {
+    "role": "Tenant Farmer",
+    "email": "tenant.demo@raithanna.test",
+    "password": "TenantDemo123!"
+  },
+  {
+    "role": "Buyer",
+    "email": "buyer.demo@raithanna.test",
+    "password": "BuyerDemo123!"
+  },
+  {
+    "role": "Service Provider",
+    "email": "service.demo@raithanna.test",
+    "password": "ServiceDemo123!"
+  }
+]

@@ -1,11 +1,19 @@
 import { useState } from 'react'
+import { translations } from '../../../translations.js'
 
 const roles = ['Farmer', 'Landlord Farmer', 'Tenant Farmer', 'Buyer', 'Service Provider']
+const roleTranslationKeys = {
+  Farmer: 'farmer',
+  'Landlord Farmer': 'landlordFarmer',
+  'Tenant Farmer': 'tenantFarmer',
+  Buyer: 'buyer',
+  'Service Provider': 'serviceProvider',
+}
 
 function getRoleIcon(role) {
-  if (role === 'Farmer' || role === 'Landlord Farmer' || role === 'Tenant Farmer') return '◈'
-  if (role === 'Buyer') return '🛒'
-  return '♟'
+  if (role === 'Farmer' || role === 'Landlord Farmer' || role === 'Tenant Farmer') return ''
+  if (role === 'Buyer') return ''
+  return ''
 }
 
 function LeafMark() {
@@ -56,12 +64,15 @@ function FieldIcon({ name }) {
   )
 }
 
-function Login({ onRegister }) {
+function Login({ language, onRegister, onLogin }) {
   const [role, setRole] = useState('Farmer')
   const [showPassword, setShowPassword] = useState(false)
+  const t = translations[language]
 
   function handleSubmit(event) {
     event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    onLogin(role, formData.get('email'))
   }
 
   return (
@@ -75,21 +86,21 @@ function Login({ onRegister }) {
           <div className="grid gap-px">
             <span className="text-2xl font-bold leading-tight tracking-tight">Raithanna</span>
             <span className="text-[9px] font-medium tracking-wide text-green-950/80">
-              Farmers Today, Brighter Tomorrow
+              {t.tagline}
             </span>
           </div>
         </header>
 
         <div className="mb-8 text-center">
           <h1 id="login-title" className="text-3xl font-bold leading-tight tracking-tight text-slate-900">
-            Welcome Back
+            {t.welcomeBack}
           </h1>
-          <p className="mt-2 text-base text-slate-500">Sign in to your RythuMitra account</p>
+          <p className="mt-2 text-base text-slate-500">{t.signInSubtitle}</p>
         </div>
 
         <div
           role="group"
-          aria-label="Select account type"
+          aria-label={t.selectAccountType}
           className="mb-7 grid grid-cols-2 gap-1.5 rounded-xl border border-slate-200 p-1.5 sm:grid-cols-3"
         >
           {roles.map((item) => (
@@ -105,7 +116,7 @@ function Login({ onRegister }) {
               }`}
             >
               <span aria-hidden="true">{getRoleIcon(item)}</span>
-              {item}
+              {t[roleTranslationKeys[item]]}
             </button>
           ))}
         </div>
@@ -117,15 +128,15 @@ function Login({ onRegister }) {
               <input
                 type="text"
                 name="email" 
-                placeholder="Email or Mobile Number"
-                aria-label="Email or mobile number"
+                placeholder={t.emailOrMobile}
+                aria-label={t.emailOrMobileLabel}
                 autoComplete="username"
                 required
                 className="min-w-0 flex-1 bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-500"
               />
             </span>
             <span className="text-xs leading-relaxed text-slate-500">
-              Enter your registered email or mobile number
+              {t.emailMobileHint}
             </span>
           </label>
 
@@ -135,53 +146,53 @@ function Login({ onRegister }) {
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
-                placeholder="Password"
-                aria-label="Password"
+                placeholder={t.password}
+                aria-label={t.password}
                 autoComplete="current-password"
                 required
                 className="min-w-0 flex-1 bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-500"
               />
               <button
                 type="button"
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-label={showPassword ? t.hidePassword : t.showPassword}
                 onClick={() => setShowPassword((visible) => !visible)}
-                className="rounded p-0.5 hover:bg-slate-100"
+                className="rounded p-0.5 hover:bg-slate-100 pointer cursor"
               >
                 <FieldIcon name="eye" />
               </button>
             </span>
-            <span className="text-xs leading-relaxed text-slate-500">Enter your password</span>
+            <span className="text-xs leading-relaxed text-slate-500">{t.enterPassword}</span>
           </label>
 
           <div className="flex items-center justify-between text-sm text-slate-800">
             <label className="inline-flex cursor-pointer items-center gap-1.5">
               <input type="checkbox" name="remember" className="h-4 w-4 accent-green-700" />
-              <span>Remember me</span>
+              <span>{t.rememberMe}</span>
             </label>
             <button type="button" className="font-semibold text-green-800 hover:underline">
-              Forgot password?
+              {t.forgotPassword}
             </button>
           </div>
 
           <button
             type="submit"
-            className="mt-1 flex min-h-[54px] items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-green-700 to-green-800 text-base font-semibold text-white shadow-sm transition hover:-translate-y-px hover:from-green-800 hover:to-green-900"
+            className="mt-1 flex min-h-[54px] items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-green-700 to-green-800 text-base font-semibold text-white shadow-sm transition hover:-translate-y-px hover:from-green-800 hover:to-green-900 cursor-pointer"
           >
-            Login
+            {t.login}
             <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 fill-none stroke-current">
               <path d="M3.5 10h12m-5-5 5 5-5 5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" />
             </svg>
           </button>
         </form>
 
-        <p className="mt-7 text-center text-sm text-slate-500">
-          Don&apos;t have an account?{' '}
+        <p className="mt-7 text-center text-sm text-slate-500 cursor-pointer">
+          {t.dontHaveAccount}{' '}
           <button
             type="button"
             onClick={onRegister}
-            className="font-semibold text-green-800 hover:underline"
+            className="font-semibold text-green-800 hover:underline cursor-pointer"
           >
-            Register
+            {t.register}
           </button>
         </p>
       </section>

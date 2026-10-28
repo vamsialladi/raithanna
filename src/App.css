@@ -556,3 +556,1783 @@
     animation-duration: 0.01ms !important;
   }
 }
+
+.farmer-dashboard {
+  display: grid;
+  width: 100%;
+  min-height: 100vh;
+  grid-template-columns: var(--dashboard-sidebar-width, 270px) 7px minmax(0, 1fr);
+  color: #23332a;
+  background: #f5f8f6;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 12px;
+}
+
+.farmer-sidebar {
+  grid-column: 1;
+  grid-row: 1;
+  position: sticky;
+  top: 0;
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  overflow: auto;
+  overflow-x: hidden;
+  padding: 14px 10px 12px;
+  border-right: 1px solid #e6ece8;
+  background: #fff;
+}
+
+.farmer-brand {
+  display: flex;
+  min-height: 38px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 7px 12px;
+  color: #134a31;
+}
+
+.farmer-brand__leaf {
+  color: #218c4e;
+  font-size: 32px;
+  line-height: 1;
+  transform: rotate(-35deg);
+}
+
+.farmer-brand strong,
+.farmer-brand small {
+  display: block;
+}
+
+.farmer-brand strong {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.farmer-brand small {
+  margin-top: 2px;
+  font-size: 7px;
+}
+
+.farmer-navigation {
+  display: grid;
+  gap: 12px;
+  padding-top: 5px;
+}
+
+.farmer-navigation__group {
+  display: grid;
+  gap: 2px;
+}
+
+.farmer-navigation__group h2 {
+  margin: 10px 7px 5px;
+  color: #849087;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.045em;
+}
+
+.farmer-navigation__item {
+  display: flex;
+  width: 100%;
+  min-height: 38px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border: 0;
+  border-radius: 6px;
+  color: #425148;
+  background: transparent;
+  cursor: pointer;
+  font-size: 15px;
+  text-align: left;
+}
+
+.farmer-navigation__item > span:last-of-type {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.dashboard-sidebar-resize {
+  position: relative;
+  z-index: 3;
+  grid-column: 2;
+  grid-row: 1;
+  width: 7px;
+  min-height: 100vh;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.dashboard-sidebar-resize::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 3px;
+  width: 1px;
+  background: #e6ece8;
+  content: "";
+}
+
+.dashboard-sidebar-resize:hover::after,
+.dashboard-sidebar-resize:focus-visible::after {
+  left: 2px;
+  width: 3px;
+  background: #21864b;
+}
+
+.dashboard-sidebar-resize:focus-visible {
+  outline: 0;
+}
+
+.farmer-navigation__item:hover {
+  background: #f0f7f1;
+}
+
+.farmer-navigation__item.is-active {
+  color: #fff;
+  background: #21864b;
+  font-weight: 700;
+}
+
+.farmer-icon {
+  display: inline-grid;
+  width: 16px;
+  flex-shrink: 0;
+  place-items: center;
+  color: #51816a;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.farmer-navigation__item.is-active .farmer-icon {
+  color: #fff;
+}
+
+.farmer-notification-count {
+  display: grid;
+  width: 16px;
+  height: 16px;
+  margin-left: auto;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: #ef4444;
+  font-size: 9px;
+}
+
+.farmer-logout {
+  display: flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding: 6px 8px;
+  border: 0;
+  border-top: 1px solid #e7ede8;
+  color: #d64236;
+  background: #fff;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.farmer-logout .farmer-icon {
+  color: inherit;
+}
+
+.farmer-main {
+  grid-column: 3;
+  grid-row: 1;
+  min-width: 0;
+  width: 100%;
+}
+
+.farmer-topbar {
+  display: flex;
+  min-width: 0;
+  min-height: 84px;
+  align-items: center;
+  gap: 15px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e7ece8;
+  background: #fff;
+}
+
+.farmer-menu-button {
+  display: none;
+  border: 0;
+  color: #56665c;
+  background: transparent;
+  cursor: pointer;
+  font-size: 17px;
+}
+
+.farmer-search {
+  display: flex;
+  width: min(390px, 44vw);
+  height: 38px;
+  align-items: center;
+  gap: 7px;
+  padding: 0 9px;
+  border: 1px solid #e4e9e6;
+  border-radius: 7px;
+  background: #f7f9f8;
+}
+
+.farmer-search .farmer-icon {
+  font-size: 18px;
+}
+
+.farmer-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  color: #435249;
+  background: transparent;
+  font-size: 9px;
+}
+
+.farmer-role-shortcuts {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.farmer-role-shortcuts::-webkit-scrollbar {
+  display: none;
+}
+
+.farmer-role-shortcuts button {
+  flex-shrink: 0;
+  min-height: 30px;
+  padding: 0 9px;
+  border: 1px solid #dfe9e1;
+  border-radius: 7px;
+  color: #315440;
+  background: #fff;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.farmer-role-shortcuts button:hover {
+  border-color: #b7cbb8;
+  color: #17613c;
+  background: #f3f7f1;
+}
+
+.farmer-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.farmer-language,
+.farmer-bell,
+.farmer-profile {
+  display: flex;
+  align-items: center;
+  border: 0;
+  color: #46564c;
+  background: transparent;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.farmer-language {
+  gap: 7px;
+  padding: 5px 8px;
+  border: 1px solid #e7ece8;
+  border-radius: 8px;
+}
+
+.farmer-language b {
+  padding-left: 7px;
+  border-left: 1px solid #dfe6e1;
+}
+
+.farmer-bell {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  place-items: center;
+  padding: 0;
+  border-radius: 8px;
+  transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.farmer-bell:hover {
+  background: #f0f7f1;
+}
+
+.farmer-bell:active {
+  transform: scale(0.94);
+}
+
+.farmer-bell:focus-visible {
+  outline: 2px solid #78b58c;
+  outline-offset: 2px;
+}
+
+.farmer-bell img {
+  display: block;
+  width: 23px;
+  height: 23px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  transition: transform 150ms ease, filter 150ms ease;
+}
+
+.farmer-bell:hover img {
+  filter: invert(32%) sepia(24%) saturate(1155%) hue-rotate(91deg) brightness(90%);
+  transform: translateY(-1px);
+}
+
+.farmer-profile {
+  gap: 7px;
+  padding: 0;
+  text-align: left;
+}
+
+.farmer-profile-menu {
+  position: relative;
+}
+
+.farmer-profile-dropdown,
+.role-dashboard__profile-menu {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 190px;
+  padding: 8px;
+  border: 1px solid #e4ebe5;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(20, 42, 26, 0.16);
+}
+
+.farmer-profile-dropdown__identity,
+.role-dashboard__profile-menu > strong,
+.role-dashboard__profile-menu > small {
+  display: block;
+  padding: 7px 8px;
+}
+
+.farmer-profile-dropdown__identity {
+  border-bottom: 1px solid #edf0ed;
+}
+
+.farmer-profile-dropdown__identity strong,
+.farmer-profile-dropdown__identity span {
+  display: block;
+}
+
+.farmer-profile-dropdown__identity strong,
+.role-dashboard__profile-menu > strong {
+  color: #26382c;
+  font-size: 11px;
+}
+
+.farmer-profile-dropdown__identity span,
+.role-dashboard__profile-menu > small {
+  margin-top: 3px;
+  color: #758178;
+  font-size: 9px;
+}
+
+.farmer-profile-dropdown > button,
+.role-dashboard__profile-menu > button {
+  display: flex;
+  width: 100%;
+  min-height: 34px;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 6px;
+  color: #c33c32;
+  background: transparent;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.farmer-profile-dropdown > button:hover,
+.role-dashboard__profile-menu > button:hover {
+  background: #fff1ef;
+}
+
+.farmer-profile__avatar {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(140deg, #287c4d, #e0a268);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.farmer-profile strong,
+.farmer-profile small {
+  display: block;
+}
+
+.farmer-profile strong {
+  font-size: 10px;
+}
+
+.farmer-profile small {
+  margin-top: 2px;
+  color: #758178;
+  font-size: 8px;
+}
+
+.farmer-content {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  gap: 9px;
+  padding: 10px;
+}
+
+.farmer-content[hidden] {
+  display: none;
+}
+
+.farmer-welcome {
+  position: relative;
+  display: flex;
+  min-height: 83px;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 13px 20px;
+  border-radius: 10px;
+  background:
+    linear-gradient(90deg, rgba(229, 244, 230, 0.97) 0%, rgba(234, 241, 220, 0.82) 48%, rgba(239, 218, 168, 0.3) 100%),
+    url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1400&q=80') center 53% / cover;
+}
+
+.farmer-welcome > div:first-child {
+  position: relative;
+  z-index: 1;
+}
+
+.farmer-welcome > div:first-child > span {
+  font-size: 11px;
+}
+
+.farmer-welcome h1 {
+  margin: 1px 0 2px;
+  color: #14251b;
+  font-size: clamp(22px, 2.8vw, 29px);
+  line-height: 1.05;
+}
+
+.farmer-welcome h1 span {
+  color: #258449;
+}
+
+.farmer-welcome p {
+  margin: 0;
+  font-size: 11px;
+}
+
+.farmer-welcome__motto {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 7px;
+  color: #fff;
+  background: rgba(15, 73, 42, 0.72);
+}
+
+.farmer-welcome__motto > span {
+  font-size: 25px;
+}
+
+.farmer-welcome__motto p {
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.farmer-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.farmer-stat {
+  position: relative;
+  display: grid;
+  min-height: 78px;
+  align-content: center;
+  gap: 3px;
+  overflow: hidden;
+  padding: 8px 40px 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+}
+
+.farmer-stat > span,
+.farmer-stat > small {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+
+.farmer-stat > span {
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.farmer-stat > strong {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.farmer-stat > small {
+  font-size: 8px;
+}
+
+.farmer-stat > .farmer-icon {
+  position: absolute;
+  right: 12px;
+  bottom: 17px;
+  width: auto;
+  font-size: 23px;
+}
+
+.farmer-stat--green {
+  color: #fff;
+  background: #218650;
+}
+
+.farmer-stat--mint {
+  border-color: #d5ebd7;
+  background: #e3f5e4;
+}
+
+.farmer-stat--yellow {
+  border-color: #f4e3ba;
+  background: #fff1d2;
+}
+
+.farmer-stat--blue {
+  border-color: #cfe3f7;
+  background: #e3f2ff;
+}
+
+.farmer-stat--purple {
+  border-color: #e4d7f5;
+  background: #f1e9ff;
+}
+
+.farmer-stat--green .farmer-icon {
+  color: #c9efda;
+}
+
+.farmer-stat--mint .farmer-icon {
+  color: #308550;
+}
+
+.farmer-stat--yellow .farmer-icon {
+  color: #8e4a20;
+}
+
+.farmer-stat--blue .farmer-icon {
+  color: #1972c4;
+}
+
+.farmer-stat--purple .farmer-icon {
+  color: #8653c9;
+}
+
+.farmer-dashboard-grid {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(260px, 1.15fr) minmax(205px, 0.95fr) minmax(205px, 0.95fr);
+  grid-template-areas:
+    "farms middle right"
+    "farms middle right"
+    "activity market quick";
+  align-items: stretch;
+  gap: 8px;
+}
+
+.farmer-card {
+  min-width: 0;
+  height: 100%;
+  padding: 10px;
+  border: 1px solid #e7ece8;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.farmer-card__header {
+  display: flex;
+  min-height: 19px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+
+.farmer-card__header h2 {
+  min-width: 0;
+  margin: 0;
+  color: #26352c;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.farmer-link {
+  padding: 2px 0;
+  border: 0;
+  color: #22854c;
+  background: transparent;
+  cursor: pointer;
+  font-size: 8px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.farmer-link select,
+.farmer-card__header select {
+  padding: 4px 6px;
+  border: 1px solid #e5e9e6;
+  border-radius: 6px;
+  color: #46554b;
+  background: white;
+  font-size: 8px;
+}
+
+.farmer-farms-card {
+  grid-area: farms;
+}
+
+.farmer-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.farmer-tabs button {
+  min-height: 27px;
+  padding: 4px;
+  border: 0;
+  border-radius: 6px;
+  color: #5b6b61;
+  background: #f1f5f2;
+  cursor: pointer;
+  font-size: 8px;
+  white-space: nowrap;
+}
+
+.farmer-tabs button.is-selected {
+  color: #fff;
+  background: #21864b;
+}
+
+.farmer-farm-list {
+  display: grid;
+  gap: 6px;
+}
+
+.farmer-farm {
+  display: flex;
+  min-width: 0;
+  min-height: 61px;
+  align-items: center;
+  gap: 7px;
+  padding: 5px;
+  border: 1px solid #edf0ed;
+  border-radius: 8px;
+}
+
+.farmer-farm__image {
+  width: 54px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background-position: center;
+  background-size: cover;
+}
+
+.farmer-farm__details {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  gap: 3px;
+}
+
+.farmer-farm__details strong,
+.farmer-farm__details span {
+  overflow-wrap: anywhere;
+}
+
+.farmer-farm__details strong {
+  overflow: hidden;
+  color: #2a382f;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.farmer-farm__details span {
+  overflow: hidden;
+  color: #68756c;
+  font-size: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.farmer-crop-badge {
+  flex-shrink: 0;
+  padding: 4px 5px;
+  border-radius: 6px;
+  color: #25834c;
+  background: #e5f5e8;
+  font-size: 7px;
+  white-space: nowrap;
+}
+
+.farmer-farm__arrow {
+  color: #75827a;
+  font-size: 18px;
+}
+
+.farmer-middle-column,
+.farmer-right-column {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.farmer-middle-column {
+  grid-area: middle;
+}
+
+.farmer-right-column {
+  grid-area: right;
+}
+
+.farmer-crop-chart {
+  display: flex;
+  min-height: 132px;
+  align-items: center;
+  justify-content: space-around;
+  gap: 10px;
+}
+
+.farmer-donut {
+  position: relative;
+  display: grid;
+  width: 112px;
+  height: 112px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 50%;
+  background: conic-gradient(#248650 0 40%, #ea5146 40% 60%, #ff9e1b 60% 80%, #f3cf36 80% 90%, #88939a 90%);
+}
+
+.farmer-donut::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 69px;
+  height: 69px;
+  border-radius: 50%;
+  background: #fff;
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+.farmer-donut strong {
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  color: #27382d;
+  font-size: 19px;
+}
+
+.farmer-donut small {
+  margin-top: 2px;
+  font-size: 7px;
+  font-weight: 500;
+}
+
+.farmer-crop-chart ul {
+  display: grid;
+  min-width: 85px;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: #56645a;
+  font-size: 8px;
+}
+
+.farmer-crop-chart li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.farmer-crop-chart li span {
+  margin-left: auto;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.dot--green { background: #248650; }
+.dot--red { background: #ea5146; }
+.dot--orange { background: #ff9e1b; }
+.dot--yellow { background: #f3cf36; }
+.dot--gray { background: #88939a; }
+
+.farmer-sales-chart {
+  min-height: 150px;
+  padding: 2px 3px 0;
+  background: repeating-linear-gradient(to bottom, transparent 0, transparent 27px, #edf1ed 28px);
+}
+
+.farmer-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #66746a;
+  font-size: 7px;
+}
+
+.farmer-chart-legend span:first-child {
+  color: #268650;
+}
+
+.farmer-chart-legend span:last-child {
+  color: #8bc7a2;
+}
+
+.farmer-bar-chart {
+  display: flex;
+  height: 115px;
+  align-items: end;
+  justify-content: space-around;
+  padding: 6px 7px 0;
+}
+
+.farmer-bar-group {
+  display: grid;
+  height: 100%;
+  align-content: end;
+  justify-items: center;
+  gap: 4px;
+  color: #68766d;
+  font-size: 7px;
+}
+
+.farmer-bars {
+  display: flex;
+  height: 94px;
+  align-items: end;
+  gap: 3px;
+}
+
+.farmer-bars i {
+  width: 9px;
+  min-height: 6px;
+  border-radius: 2px 2px 0 0;
+  background: #258750;
+}
+
+.farmer-bars i + i {
+  background: #9bd6ae;
+}
+
+.farmer-weather {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 2px 10px;
+}
+
+.farmer-weather__icon {
+  font-size: 32px;
+}
+
+.farmer-weather > div {
+  display: grid;
+  gap: 3px;
+}
+
+.farmer-weather strong {
+  color: #24352b;
+  font-size: 20px;
+}
+
+.farmer-weather span,
+.farmer-weather small {
+  color: #647168;
+  font-size: 8px;
+}
+
+.farmer-weather-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  padding: 8px 0;
+  border-top: 1px solid #edf0ed;
+  border-bottom: 1px solid #edf0ed;
+  color: #526057;
+  font-size: 8px;
+  text-align: center;
+}
+
+.farmer-weather-stats span {
+  font-weight: 700;
+}
+
+.farmer-weather-stats small {
+  display: block;
+  margin-top: 3px;
+  color: #7a867d;
+  font-size: 7px;
+  font-weight: 400;
+}
+
+.farmer-irrigation {
+  display: grid;
+  gap: 3px;
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 7px;
+  color: #267343;
+  background: #edf8ef;
+  font-size: 8px;
+}
+
+.farmer-irrigation span {
+  color: #627568;
+}
+
+.farmer-task-list,
+.farmer-activity-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 2px 0;
+  list-style: none;
+}
+
+.farmer-task-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  color: #35443a;
+  font-size: 8px;
+}
+
+.farmer-task-list input {
+  width: 12px;
+  height: 12px;
+  margin: 0;
+  accent-color: #21864b;
+}
+
+.farmer-task-list li > span {
+  display: grid;
+  flex: 1;
+  gap: 3px;
+}
+
+.farmer-task-list small {
+  color: #879188;
+  font-size: 7px;
+}
+
+.priority {
+  padding: 4px 6px;
+  border-radius: 5px;
+  font-size: 7px;
+}
+
+.priority--high { color: #d74a40; background: #fff0ed; }
+.priority--medium { color: #b77916; background: #fff6df; }
+.priority--low { color: #328451; background: #eaf7ed; }
+
+.farmer-activity-card { grid-area: activity; }
+.farmer-market-card { grid-area: market; }
+.farmer-quick-card { grid-area: quick; }
+
+.farmer-activity-list {
+  gap: 7px;
+}
+
+.farmer-activity-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.farmer-activity-list li > span {
+  color: #25834c;
+  font-weight: 800;
+}
+
+.farmer-activity-list p {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  flex: 1;
+  gap: 5px;
+  margin: 0;
+  color: #45534a;
+  font-size: 8px;
+}
+
+.farmer-activity-list small {
+  flex-shrink: 0;
+  color: #849087;
+  font-size: 7px;
+}
+
+.farmer-market-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.farmer-market-item {
+  display: grid;
+  gap: 4px;
+  overflow: hidden;
+  padding: 4px;
+  border: 1px solid #edf0ed;
+  border-radius: 7px;
+}
+
+.farmer-market-item__image {
+  display: grid;
+  min-height: 40px;
+  place-items: center;
+  border-radius: 5px;
+  background: linear-gradient(145deg, #e9f2d9, #f8e9be);
+  font-size: 22px;
+}
+
+.farmer-market-item strong,
+.farmer-market-item b,
+.farmer-market-item small {
+  overflow: hidden;
+  font-size: 7px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.farmer-market-item strong { color: #405046; }
+.farmer-market-item b { color: #27372d; }
+.farmer-market-item small { font-weight: 700; }
+.market-up { color: #25834c; }
+.market-down { color: #d84a40; }
+
+.farmer-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.farmer-quick-action {
+  display: grid;
+  min-width: 0;
+  min-height: 52px;
+  align-content: center;
+  justify-items: center;
+  gap: 4px;
+  padding: 4px 2px;
+  border: 1px solid #edf0ed;
+  border-radius: 7px;
+  background: #fafcfb;
+  cursor: pointer;
+  font-size: 7px;
+  line-height: 1.25;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.farmer-quick-action .farmer-icon {
+  font-size: 17px;
+}
+
+.farmer-quick-action--green { color: #23804a; }
+.farmer-quick-action--orange { color: #995124; }
+.farmer-quick-action--yellow { color: #b9811a; }
+.farmer-quick-action--blue { color: #2874b8; }
+
+@media (max-width: 1100px) {
+  .farmer-dashboard {
+    grid-template-columns: var(--dashboard-sidebar-width, 270px) 7px minmax(0, 1fr);
+  }
+
+  .farmer-dashboard-grid {
+    grid-template-columns: minmax(230px, 1.1fr) minmax(190px, 0.9fr);
+    grid-template-areas:
+      "farms middle"
+      "farms right"
+      "activity market"
+      "quick quick";
+  }
+
+  .farmer-right-column {
+    grid-area: right;
+  }
+
+  .farmer-quick-card {
+    grid-area: quick;
+  }
+}
+
+@media (max-width: 760px) {
+  .farmer-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-sidebar-resize {
+    display: none;
+  }
+
+  .farmer-sidebar {
+    position: fixed;
+    z-index: 22;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: min(280px, 85vw);
+    grid-column: 1;
+    grid-row: 1;
+    display: none;
+    height: auto;
+    box-shadow: 12px 0 32px rgba(20, 42, 26, 0.16);
+  }
+
+  .farmer-sidebar.is-open {
+    display: flex;
+  }
+
+  .farmer-sidebar-backdrop {
+    position: fixed;
+    z-index: 21;
+    inset: 0;
+    display: block;
+    border: 0;
+    background: rgba(15, 32, 21, 0.38);
+  }
+
+  .farmer-menu-button {
+    display: inline-grid;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    place-items: center;
+    border-radius: 7px;
+  }
+
+  .farmer-menu-button:hover {
+    background: #f0f7f1;
+  }
+
+  .farmer-topbar {
+    flex-wrap: wrap;
+    min-height: 76px;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .farmer-main {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .farmer-search {
+    width: auto;
+    height: 36px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .farmer-role-shortcuts {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    padding-bottom: 2px;
+  }
+
+  .farmer-topbar__actions {
+    order: 2;
+    gap: 8px;
+  }
+
+  .farmer-language {
+    font-size: 0;
+  }
+
+  .farmer-language b {
+    font-size: 9px;
+  }
+
+  .farmer-profile > span:nth-child(2) {
+    display: none;
+  }
+
+  .farmer-profile-dropdown {
+    top: calc(100% + 8px);
+  }
+
+  .farmer-content {
+    padding: 8px;
+  }
+
+  .farmer-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .farmer-dashboard-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "farms"
+      "middle"
+      "right"
+      "activity"
+      "market"
+      "quick";
+  }
+
+  .farmer-middle-column,
+  .farmer-right-column {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 460px) {
+  .farmer-welcome {
+    min-height: 95px;
+    padding: 12px;
+  }
+
+  .farmer-welcome__motto {
+    display: none;
+  }
+
+  .farmer-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .farmer-farm {
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr) 12px;
+    align-items: center;
+    gap: 5px 7px;
+  }
+
+  .farmer-farm__details {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .farmer-crop-badge {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+    margin-left: 0;
+  }
+
+  .farmer-farm__arrow {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: center;
+  }
+
+  .farmer-activity-list p {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .farmer-activity-list small {
+    grid-column: 1;
+  }
+
+  .farmer-market-item strong,
+  .farmer-market-item b,
+  .farmer-market-item small {
+    font-size: 8px;
+  }
+}
+
+.role-dashboard {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: 230px minmax(0, 1fr);
+  color: #23332a;
+  background: #f5f8f6;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.farmer-dashboard,
+.role-dashboard {
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+.language-picker--compact .translate-button {
+  min-height: 32px;
+  gap: 5px;
+  padding: 0 8px;
+  font-size: 10px;
+}
+
+.role-dashboard__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.role-dashboard__sidebar {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  padding: 18px 14px;
+  border-right: 1px solid #e6ece8;
+  background: #fff;
+}
+
+.role-dashboard__brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 7px 24px;
+  color: #134a31;
+  text-decoration: none;
+}
+
+.role-dashboard__brand > span:first-child {
+  color: #218c4e;
+  font-size: 32px;
+}
+
+.role-dashboard__brand strong,
+.role-dashboard__brand small {
+  display: block;
+}
+
+.role-dashboard__brand strong {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.role-dashboard__brand small {
+  margin-top: 2px;
+  font-size: 8px;
+}
+
+.role-dashboard__sidebar nav {
+  display: grid;
+  gap: 6px;
+}
+
+.role-dashboard__sidebar nav button {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 7px;
+  color: #425148;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  text-align: left;
+}
+
+.role-dashboard__sidebar nav button:hover {
+  background: #f0f7f1;
+}
+
+.role-dashboard__sidebar nav button.is-active {
+  color: #fff;
+  background: #21864b;
+  font-weight: 700;
+}
+
+.role-dashboard__logout {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  margin-top: auto;
+  padding: 12px 10px 0;
+  border-top: 1px solid #e7ede8;
+  color: #d64236;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.role-dashboard__main {
+  min-width: 0;
+}
+
+.role-dashboard__topbar {
+  display: flex;
+  min-height: 60px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 10px 24px;
+  border-bottom: 1px solid #e7ece8;
+  background: #fff;
+}
+
+.role-dashboard__topbar label {
+  display: flex;
+  width: min(440px, 60%);
+  min-height: 36px;
+  align-items: center;
+  gap: 9px;
+  padding: 0 12px;
+  border: 1px solid #e4e9e6;
+  border-radius: 8px;
+  color: #647168;
+  background: #f7f9f8;
+}
+
+.role-dashboard__topbar input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  color: #435249;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+}
+
+.role-dashboard__user {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.role-dashboard__profile {
+  position: relative;
+}
+
+.role-dashboard__profile-menu {
+  position: absolute;
+  z-index: 4;
+  top: calc(100% + 10px);
+  right: 0;
+  display: grid;
+  min-width: 180px;
+  gap: 9px;
+  padding: 14px;
+  border: 1px solid #e4e9e6;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(20, 42, 26, 0.13);
+}
+
+.role-dashboard__profile-menu > strong {
+  font-size: 12px;
+}
+
+.role-dashboard__profile-menu > button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 0 0;
+  border: 0;
+  border-top: 1px solid #edf0ed;
+  color: #d64236;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  text-align: left;
+}
+
+.role-dashboard__profile-menu > small {
+  margin-top: -6px;
+}
+
+.role-dashboard__user > span:first-child {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(140deg, #287c4d, #e0a268);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.role-dashboard__user strong,
+.role-dashboard__user small {
+  display: block;
+}
+
+.role-dashboard__user strong {
+  font-size: 12px;
+}
+
+.role-dashboard__user small {
+  margin-top: 3px;
+  color: #758178;
+  font-size: 10px;
+}
+
+.role-dashboard__user > span:last-child {
+  color: #647168;
+  font-size: 12px;
+}
+
+.role-dashboard__content {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+}
+
+.role-dashboard__welcome {
+  padding: 24px;
+  border: 1px solid #dfece0;
+  border-radius: 12px;
+  background: linear-gradient(110deg, #e7f4e8, #fff4d8);
+}
+
+.role-dashboard__welcome > span {
+  color: #526057;
+  font-size: 13px;
+}
+
+.role-dashboard__welcome h1 {
+  margin: 5px 0;
+  color: #183c27;
+  font-size: clamp(24px, 3vw, 34px);
+}
+
+.role-dashboard__welcome p {
+  margin: 0;
+  color: #526057;
+  font-size: 14px;
+}
+
+.role-dashboard__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.role-dashboard__stats article {
+  display: grid;
+  min-height: 116px;
+  align-content: center;
+  gap: 7px;
+  padding: 16px;
+  border: 1px solid #e4ebe5;
+  border-radius: 11px;
+  background: #fff;
+}
+
+.role-dashboard__stats article > span {
+  color: #5c6a60;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.role-dashboard__stats strong {
+  color: #183c27;
+  font-size: 25px;
+}
+
+.role-dashboard__stats small {
+  color: #7a867d;
+  font-size: 11px;
+}
+
+.role-dashboard__section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 5px;
+}
+
+.role-dashboard__section-heading h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.role-dashboard__section-heading span {
+  color: #7a867d;
+  font-size: 11px;
+}
+
+.role-dashboard__cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.role-dashboard__cards article {
+  display: flex;
+  min-height: 190px;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+  border: 1px solid #e4ebe5;
+  border-radius: 11px;
+  background: #fff;
+}
+
+.role-dashboard__card-icon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 10px;
+  color: #21864b;
+  background: #eaf5ec;
+  font-size: 20px;
+}
+
+.role-dashboard__cards h3 {
+  margin: 15px 0 5px;
+  color: #27382d;
+  font-size: 15px;
+}
+
+.role-dashboard__cards p {
+  margin: 0 0 15px;
+  color: #657269;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.role-dashboard__cards button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding: 0;
+  border: 0;
+  color: #21864b;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .role-dashboard {
+    grid-template-columns: 190px minmax(0, 1fr);
+  }
+
+  .role-dashboard__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .role-dashboard__cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .role-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .role-dashboard__sidebar {
+    min-height: auto;
+    padding: 10px;
+  }
+
+  .role-dashboard__brand {
+    padding-bottom: 10px;
+  }
+
+  .role-dashboard__sidebar nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .role-dashboard__sidebar nav button {
+    min-height: 34px;
+    font-size: 10px;
+  }
+
+  .role-dashboard__logout {
+    margin-top: 10px;
+  }
+
+  .role-dashboard__topbar {
+    gap: 8px;
+    padding: 9px 12px;
+  }
+
+  .role-dashboard__topbar label {
+    width: auto;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .role-dashboard__actions {
+    gap: 6px;
+  }
+
+  .role-dashboard__content {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .role-dashboard__welcome {
+    padding: 18px;
+  }
+
+  .role-dashboard__stats {
+    gap: 8px;
+  }
+
+  .role-dashboard__stats article {
+    min-height: 98px;
+    padding: 12px;
+  }
+}
