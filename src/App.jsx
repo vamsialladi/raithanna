@@ -1,12 +1,16 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { MarketplaceProvider } from './context/MarketplaceContext';
 import { CartProvider } from './context/CartContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 import { ToastProvider } from './context/ToastContext';
+import { useTranslation } from './context/LanguageContext';
 
 // Public & Landing Pages
 import MainLandingPage from './pages/MainLandingPage';
+
+// Farmer Dashboard (New from developement)
+import Farmer from './assets/Components/Pages/Farmer.jsx';
 
 // Landlord Farmland Dashboard
 import LandlordDashboard from './assets/Components/Dashboard/LandlordDashboard';
@@ -43,6 +47,58 @@ import SettingsPage from './pages/SettingsPage';
 import './styles/marketplace.css';
 import './App.css';
 
+function FarmerRoute() {
+  const { language, setLanguage } = useTranslation();
+  const navigate = useNavigate();
+  const userName = sessionStorage.getItem('raithanna.username') || 'Farmer User';
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('raithanna.username');
+    sessionStorage.removeItem('accountRole');
+    navigate('/');
+  };
+
+  const handleNavigateRole = (role) => {
+    const roleRoutes = {
+      'Farmer': '/farmer',
+      'Tenant Farmer': '/dashboard',
+      'Buyer': '/buyer/dashboard',
+      'Service Provider': '/service-dashboard',
+      'Landlord Farmer': '/landlord',
+    };
+    if (roleRoutes[role]) {
+      navigate(roleRoutes[role]);
+    }
+  };
+
+  const langCodeMap = {
+    English: 'en',
+    'తెలుగు': 'te',
+    'ಕನ್ನಡ': 'kn',
+    'हिन्दी': 'hi',
+    'தமிழ்': 'ta',
+    en: 'en',
+    te: 'te',
+    kn: 'kn',
+    hi: 'hi',
+    ta: 'ta',
+  };
+  const code = langCodeMap[language] || 'en';
+
+  return (
+    <Farmer
+      language={code}
+      onLanguageChange={(newCode) => {
+        const revMap = { en: 'English', te: 'తెలుగు', kn: 'ಕನ್ನಡ', hi: 'हिन्दी', ta: 'தமிழ்' };
+        setLanguage(revMap[newCode] || newCode);
+      }}
+      onNavigateRole={handleNavigateRole}
+      onLogout={handleLogout}
+      userName={userName}
+    />
+  );
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -58,7 +114,11 @@ function App() {
                   <Route path="/login" element={<MainLandingPage initialAuthMode="login" />} />
                   <Route path="/register" element={<MainLandingPage initialAuthMode="register" />} />
 
-                  {/* 2. Service Provider Hub Routes */}
+                  {/* 2. Farmer Dashboard Route */}
+                  <Route path="/farmer/*" element={<FarmerRoute />} />
+                  <Route path="/farmer" element={<FarmerRoute />} />
+
+                  {/* 3. Service Provider Hub Routes */}
                   <Route
                     path="/service-dashboard"
                     element={
@@ -93,7 +153,7 @@ function App() {
                     }
                   />
 
-                  {/* 3. Landlord Farmland Dashboard Routes */}
+                  {/* 4. Landlord Farmland Dashboard Routes */}
                   <Route
                     path="/landlord/*"
                     element={
@@ -115,7 +175,7 @@ function App() {
                     }
                   />
 
-                  {/* 4. Tenant Farmer Dashboard Routes (Protected) */}
+                  {/* 5. Tenant Farmer Dashboard Routes (Protected) */}
                   <Route
                     path="/dashboard/*"
                     element={
@@ -134,14 +194,14 @@ function App() {
                   />
                   <Route
                     path="/tenant-farmer/*"
-                    element={
-                      <ProtectedRoute>
-                        <TenantFarmerLayout />
-                      </ProtectedRoute>
-                    }
+                    element={<Navigate to="/dashboard" replace />}
+                  />
+                  <Route
+                    path="/tenant-farmer"
+                    element={<Navigate to="/dashboard" replace />}
                   />
 
-                  {/* 5. Buyer Portal with Shared Layout */}
+                  {/* 6. Buyer Portal with Shared Layout */}
                   <Route path="/buyer" element={<BuyerLayout />}>
                     <Route index element={<Navigate to="/buyer/dashboard" replace />} />
                     <Route path="dashboard" element={<BuyerDashboard />} />
@@ -164,7 +224,7 @@ function App() {
                     <Route path="settings" element={<SettingsPage />} />
                   </Route>
 
-                  {/* 6. Fallback */}
+                  {/* 7. Fallback */}
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </ToastProvider>

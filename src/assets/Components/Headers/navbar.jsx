@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from '../../../context/LanguageContext.jsx'
+import LanguagePicker from '../LanguagePicker.jsx'
 
 function SearchIcon() {
   return (
@@ -10,37 +11,71 @@ function SearchIcon() {
   )
 }
 
-function Navbar({ onAuthOpen, onHome, currentUser, onDashboardOpen }) {
+function Navbar({
+  language: propLanguage,
+  onLanguageChange,
+  onAuthOpen,
+  onLogin,
+  onRegister,
+  onHome,
+  currentUser,
+  onDashboardOpen,
+}) {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [languageOpen, setLanguageOpen] = useState(false)
-  const pickerRef = useRef(null)
-  const { language, setLanguage, t, availableLanguages } = useTranslation()
+  let contextLanguage = 'English'
+  let setContextLanguage = null
+  let t = (k) => k
+
+  try {
+    const ctx = useTranslation()
+    if (ctx) {
+      contextLanguage = ctx.language || 'English'
+      setContextLanguage = ctx.setLanguage
+      t = ctx.t || ((k) => k)
+    }
+  } catch {
+    // Rendered outside of context
+  }
+
+  const langCode =
+    propLanguage ||
+    (contextLanguage === 'English'
+      ? 'en'
+      : contextLanguage === 'తెలుగు'
+      ? 'te'
+      : contextLanguage === 'ಕನ್ನಡ'
+      ? 'kn'
+      : contextLanguage === 'हिन्दी'
+      ? 'hi'
+      : contextLanguage === 'தமிழ்'
+      ? 'ta'
+      : 'en')
+
+  const handleLanguageChange = (code) => {
+    if (onLanguageChange) onLanguageChange(code)
+    if (setContextLanguage) {
+      const codeToName = { en: 'English', te: 'తెలుగు', kn: 'ಕನ್ನಡ', hi: 'हिन्दी', ta: 'தமிழ்' }
+      setContextLanguage(codeToName[code] || code)
+    }
+  }
 
   const links = [
-    { label: t('navHome'), href: '#home' },
-    { label: t('navAbout'), href: '#about' },
-    { label: t('navContact'), href: '#contact' },
-    { label: t('navServices'), href: '#services' },
+    { label: t('navHome') || 'Home', href: '#home', key: 'home' },
+    { label: t('navAbout') || 'About', href: '#about', key: 'about' },
+    { label: t('navContact') || 'Contact', href: '#contact', key: 'contact' },
+    { label: t('navServices') || 'Services', href: '#services', key: 'services' },
   ]
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (pickerRef.current && !pickerRef.current.contains(event.target)) {
-        setLanguageOpen(false)
-      }
-    }
-    if (languageOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [languageOpen])
+  const handleAuthClick = () => {
+    setMenuOpen(false)
+    if (onAuthOpen) onAuthOpen('login')
+    else if (onLogin) onLogin()
+  }
 
   return (
     <header className="site-header">
       <div className="site-header__inner">
-        <a className="brand" href="#home" aria-label="Raithanna home" onClick={onHome}>
+        <a className="brand" href="#home" aria-label={t('navHome') || 'Raithanna home'} onClick={onHome}>
           <img className="brand__logo" src="/raithanna-logo.png" alt="Raithanna" />
         </a>
 
@@ -48,10 +83,10 @@ function Navbar({ onAuthOpen, onHome, currentUser, onDashboardOpen }) {
           <input
             aria-label="Search Raithanna"
             name="q"
-            placeholder={t('navSearchPlaceholder')}
+            placeholder={t('navSearchPlaceholder') || 'Search...'}
             type="search"
           />
-          <button type="submit" aria-label="Search">
+          <button type="submit" aria-label={t('search') || 'Search'}>
             <SearchIcon />
           </button>
         </form>
@@ -74,10 +109,10 @@ function Navbar({ onAuthOpen, onHome, currentUser, onDashboardOpen }) {
               <a
                 className="site-nav__link"
                 href={link.href}
-                key={link.href}
+                key={link.key}
                 onClick={() => {
                   setMenuOpen(false)
-                  onHome()
+                  if (onHome) onHome()
                 }}
               >
                 {link.label}
@@ -86,40 +121,7 @@ function Navbar({ onAuthOpen, onHome, currentUser, onDashboardOpen }) {
           </nav>
 
           <div className="site-header__actions">
-            <div className="language-picker" ref={pickerRef}>
-              <button
-                className="translate-button"
-                type="button"
-                aria-expanded={languageOpen}
-                aria-label={`Translate, current language ${language}`}
-                onClick={() => setLanguageOpen(!languageOpen)}
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
-                </svg>
-                <span>{language === 'English' ? t('navTranslate') : language}</span>
-              </button>
-              {languageOpen && (
-                <div className="language-menu" role="group" aria-label="Choose language">
-                  {availableLanguages.map((option) => (
-                    <button
-                      className="language-menu__option"
-                      type="button"
-                      key={option}
-                      aria-pressed={language === option}
-                      onClick={() => {
-                        setLanguage(option)
-                        setLanguageOpen(false)
-                      }}
-                    >
-                      <span>{option}</span>
-                      {language === option && <span aria-hidden="true" style={{ color: '#17613c', fontWeight: 'bold' }}>✓</span>}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            <LanguagePicker language={langCode} onLanguageChange={handleLanguageChange} />
             {currentUser ? (
               <button
                 className="signup-button"
@@ -135,12 +137,9 @@ function Navbar({ onAuthOpen, onHome, currentUser, onDashboardOpen }) {
               <button
                 className="signup-button"
                 type="button"
-                onClick={() => {
-                  setMenuOpen(false)
-                  onAuthOpen()
-                }}
+                onClick={handleAuthClick}
               >
-                {t('navLoginRegister')}
+                {t('navLoginRegister') || 'Login / Register'}
               </button>
             )}
           </div>

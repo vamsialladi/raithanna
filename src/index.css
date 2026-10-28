@@ -49,13 +49,46 @@ a {
 }
 
 button:focus-visible,
-a:focus-visible,
-input:focus-visible {
+a:focus-visible {
   outline: 3px solid #78b58c;
   outline-offset: 3px;
+}
+
+.auth-card input:focus-visible,
+.auth-card select:focus-visible {
+  outline: none;
+}
+
+.auth-card label:focus-within,
+.auth-card label > span:focus-within,
+.auth-card select:focus {
+  box-shadow: none;
 }
 
 ::selection {
   color: #fff;
   background: #145335;
+}
+
+.landing-page {
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+.landing-hero-title {
+  font-size: clamp(2.7rem, 6.3vw, 5.4rem);
+}
+
+.landing-hero-description {
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+}
+
+.landing-section-title {
+  font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+}
+
+@media (max-width: 640px) {
+  .landing-hero-title {
+    font-size: clamp(2.65rem, 11vw, 4.2rem);
+  }
 }

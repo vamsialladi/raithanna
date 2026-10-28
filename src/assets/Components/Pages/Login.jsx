@@ -55,7 +55,7 @@ function FieldIcon({ name }) {
   );
 }
 
-function Login({ onRegister, onLoginSuccess, onSuccess }) {
+function Login({ onRegister, onLoginSuccess, onSuccess, onLogin }) {
   const marketplace = useMarketplace ? useMarketplace() : null;
   const auth = useAuth ? useAuth() : null;
   const showToast = useToast ? useToast() : null;
@@ -66,8 +66,7 @@ function Login({ onRegister, onLoginSuccess, onSuccess }) {
   const from = location.state?.from?.pathname || '/dashboard';
   const roleAccessError = location.state?.roleError;
 
-  // Role state initialized to TENANT_FARMER
-  const [role, setRole] = useState(USER_ROLES.TENANT_FARMER);
+  const [role, setRole] = useState(USER_ROLES.FARMER);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -121,20 +120,21 @@ function Login({ onRegister, onLoginSuccess, onSuccess }) {
       });
 
       const authorizedRole = normalizeRole(authenticatedUser.role || authenticatedUser.farmerType);
+      const userName = authenticatedUser.farmerName || authenticatedUser.name || 'User';
 
       authService.saveSession(authenticatedUser, remember);
+      window.sessionStorage.setItem('raithanna.username', userName);
+      window.sessionStorage.setItem('accountRole', authorizedRole === USER_ROLES.SERVICE_PROVIDER ? 'Service Provider' : authorizedRole);
+
       if (marketplace?.setUser) marketplace.setUser(authenticatedUser);
       if (marketplace?.setIsAuthenticated) marketplace.setIsAuthenticated(true);
-
-      // Save role in session storage for service provider integration
-      window.sessionStorage.setItem('accountRole', authorizedRole === USER_ROLES.SERVICE_PROVIDER ? 'Service Provider' : authorizedRole);
 
       // Sync with AuthContext for Buyer sessions
       if (auth?.login) {
         auth.login({
           email: authenticatedUser.email,
           role: authorizedRole === USER_ROLES.BUYER ? 'Buyer' : authorizedRole,
-          name: authenticatedUser.farmerName || authenticatedUser.name || 'User',
+          name: userName,
         });
       }
 
@@ -147,24 +147,27 @@ function Login({ onRegister, onLoginSuccess, onSuccess }) {
       if (onSuccess) {
         onSuccess(authorizedRole === USER_ROLES.SERVICE_PROVIDER ? 'Service Provider' : authorizedRole);
       }
+      if (onLogin) {
+        onLogin(authorizedRole, email.trim());
+      }
 
       // Role routing
       if (authorizedRole === USER_ROLES.BUYER) {
         if (showToast) showToast('Logged in as Buyer! Redirecting to Buyer Dashboard...');
         navigate('/buyer/dashboard', { replace: true });
       } else if (authorizedRole === USER_ROLES.LANDLORD_FARMER) {
-        if (showToast) showToast(`Welcome back, ${authenticatedUser.farmerName}! Redirecting to Landlord Dashboard...`);
+        if (showToast) showToast(`Welcome back, ${userName}! Redirecting to Landlord Dashboard...`);
         navigate('/landlord', { replace: true });
       } else if (authorizedRole === USER_ROLES.SERVICE_PROVIDER) {
-        if (showToast) showToast(`Welcome back, ${authenticatedUser.farmerName}! Redirecting to Service Provider Hub...`);
+        if (showToast) showToast(`Welcome back, ${userName}! Redirecting to Service Provider Hub...`);
         navigate('/service-dashboard', { replace: true });
       } else if (authorizedRole === USER_ROLES.TENANT_FARMER) {
-        if (showToast) showToast(`Welcome back, ${authenticatedUser.farmerName}!`);
-        navigate(from, { replace: true });
-      } else {
-        // General Farmer
-        if (showToast) showToast(`Welcome back, ${authenticatedUser.farmerName}!`);
+        if (showToast) showToast(`Welcome back, ${userName}! Redirecting to Tenant Farmer Portal...`);
         navigate('/dashboard', { replace: true });
+      } else {
+        // Farmer (Main Farmer Dashboard)
+        if (showToast) showToast(`Welcome back, ${userName}! Redirecting to Farmer Dashboard...`);
+        navigate('/farmer', { replace: true });
       }
     } catch (err) {
       setError(err.message || 'Login failed. Please verify your credentials.');
@@ -291,7 +294,7 @@ function Login({ onRegister, onLoginSuccess, onSuccess }) {
               />
               <button
                 type="button"
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-label={showPassword ? t('hidePassword') || 'Hide password' : t('showPassword') || 'Show password'}
                 onClick={() => setShowPassword((visible) => !visible)}
                 className="rounded p-0.5 hover:bg-slate-100 cursor-pointer"
               >

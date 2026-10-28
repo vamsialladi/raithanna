@@ -13,7 +13,7 @@ function Register({ onLogin, onRegisterSuccess, onSuccess }) {
   const showToast = useToast ? useToast() : null;
   const { t } = useTranslation ? useTranslation() : { t: (k) => k };
 
-  const [role, setRole] = useState(USER_ROLES.TENANT_FARMER);
+  const [role, setRole] = useState(USER_ROLES.FARMER);
   const [showPassword, setShowPassword] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -43,6 +43,7 @@ function Register({ onLogin, onRegisterSuccess, onSuccess }) {
       const derivedName = `${firstName} ${lastName}`.trim() || 'New User';
       const normRole = normalizeRole(role);
 
+      window.sessionStorage.setItem('raithanna.username', derivedName);
       window.sessionStorage.setItem('accountRole', normRole === USER_ROLES.SERVICE_PROVIDER ? 'Service Provider' : normRole);
 
       if (onRegisterSuccess) {
@@ -82,13 +83,9 @@ function Register({ onLogin, onRegisterSuccess, onSuccess }) {
         if (showToast) showToast(`Welcome to Raithanna, ${derivedName}!`);
         navigate('/dashboard', { replace: true });
       } else {
-        if (showToast) showToast(`Account created for ${derivedName}. Redirecting to login.`);
-        navigate('/login', {
-          state: {
-            roleNotice: `Registration successful! Please log in to continue.`,
-          },
-          replace: true,
-        });
+        // Farmer (Owner Farmer)
+        if (showToast) showToast(`Welcome to Raithanna Farmer Dashboard, ${derivedName}!`);
+        navigate('/farmer', { replace: true });
       }
     } catch (err) {
       setError(err.message || 'Registration failed.');
@@ -246,7 +243,7 @@ function Register({ onLogin, onRegisterSuccess, onSuccess }) {
             />
             <button
               type="button"
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              aria-label={showPassword ? t('hidePassword') || 'Hide password' : t('showPassword') || 'Show password'}
               onClick={() => setShowPassword((visible) => !visible)}
               className="rounded p-0.5 hover:bg-slate-100 cursor-pointer"
             >
@@ -266,7 +263,7 @@ function Register({ onLogin, onRegisterSuccess, onSuccess }) {
             </button>
           </label>
 
-          <label className="flex min-h-[46px] items-center gap-2.5 rounded-lg border border-slate-200 px-3 transition focus-within:border-green-700 focus-within:ring-2 focus-within:ring-green-700/10">
+          <label className="flex min-h-[46px] items-center gap-2.5 rounded-lg border border-slate-200 px-3 transition focus-within:border-green-700 focus-within:ring-2 focus-within:ring-green-700/10 ">
             <svg
               aria-hidden="true"
               viewBox="0 0 24 24"
@@ -289,11 +286,11 @@ function Register({ onLogin, onRegisterSuccess, onSuccess }) {
               aria-label="Confirm password"
               autoComplete="new-password"
               required
-              className="min-w-0 flex-1 bg-transparent text-xs text-slate-800 outline-none placeholder:text-slate-500"
+              className="min-w-0 flex-1 bg-transparent text-xs text-slate-800 outline-none placeholder:text-slate-500 "
             />
           </label>
 
-          <label className="flex cursor-pointer items-center gap-2 text-xs text-slate-600">
+          <label className="flex cursor-pointer items-center gap-2 text-xs text-slate-600 cursor-pointer">
             <input
               type="checkbox"
               name="termsAccepted"
