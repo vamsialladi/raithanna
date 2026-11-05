@@ -1,0 +1,388 @@
+
+.sp-page {
+  min-height: 100vh;
+  padding: 24px 5%;
+  background: #f6faf6;
+  color: #1b2d20;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* CARDS */
+.sp-card {
+  background: #fff;
+  border: 1px solid #edf1ed;
+  border-radius: 18px;
+  margin-bottom: 22px;
+  box-shadow: 0 5px 18px rgba(20, 60, 30, 0.06);
+  overflow: hidden;
+}
+
+.sp-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sp-card-heading h2 {
+  margin: 0;
+  font-size: 23px;
+  font-weight: 800;
+  color: #172b1c;
+}
+
+.sp-heading-icon {
+  color: #087b26;
+  font-size: 27px;
+}
+
+/* BUTTONS */
+.sp-btn {
+  padding: 11px 20px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.sp-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.sp-btn-primary {
+  background: #087b26;
+  color: white;
+}
+
+.sp-btn-primary:hover {
+  background: #05651e;
+}
+
+.sp-btn-danger,
+.sp-btn-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.sp-btn-secondary {
+  border-color: #dce4dd;
+  background: white;
+  color: #344b38;
+}
+
+.sp-btn-secondary:hover {
+  background: #f5f9f5;
+}
+
+.sp-btn-danger {
+  background: #fff0f0;
+  color: #c62828;
+  border-color: #ffe1e1;
+}
+
+.sp-btn-danger:hover {
+  background: #ffe4e4;
+}
+
+.sp-btn-edit {
+  background: #edf9ed;
+  color: #17652b;
+  border-color: #d1ecd2;
+}
+
+.sp-btn-edit:hover {
+  background: #dcf5dc;
+}
+
+/* LISTINGS */
+.sp-list-card {
+  padding: 22px;
+}
+
+.sp-list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.sp-count {
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #eaf6eb;
+  color: #257336;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.sp-bulk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sp-list-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sp-list-controls > input {
+  width: min(100%, 360px);
+  min-width: 180px;
+  padding: 11px 15px;
+  border: 1px solid #dce4dd;
+  border-radius: 10px;
+  outline: none;
+  font-size: 14px;
+}
+
+.sp-list-controls > input:focus {
+  border-color: #15803d;
+}
+
+.sp-filter-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #536457;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sp-filter-control select {
+  min-width: 150px;
+  padding: 10px 32px 10px 12px;
+  border: 1px solid #dce4dd;
+  border-radius: 10px;
+  background: #fff;
+  color: #26392b;
+  font: inherit;
+  cursor: pointer;
+}
+
+.sp-filter-control select:focus {
+  border-color: #15803d;
+  outline: 2px solid #15803d20;
+}
+
+.sp-results-count {
+  margin-left: auto;
+  color: #7a887c;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.sp-list-search-input::-webkit-search-cancel-button {
+  display: none;
+}
+
+/* TABLE */
+.sp-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.sp-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.sp-table th {
+  padding: 14px 12px;
+  background: #e8f7e9;
+  color: #214a29;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: left;
+}
+
+.sp-table th:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.sp-table th:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.sp-table td {
+  padding: 12px;
+  border-bottom: 1px solid #edf1ed;
+  color: #354438;
+  font-size: 13px;
+}
+
+.sp-table tbody tr:hover {
+  background: #f8fcf8;
+}
+
+.sp-table input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: #087b26;
+  cursor: pointer;
+}
+
+.sp-type-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.seed-badge {
+  background: #e1f8e2;
+  color: #23702b;
+}
+
+.pesticide-badge {
+  background: #f0e5fa;
+  color: #7434a0;
+}
+
+.sp-price {
+  font-weight: 700;
+}
+
+.sp-status {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-active {
+  color: #187336;
+  background: #e5f7e7;
+}
+
+.status-out {
+  color: #b42323;
+  background: #ffeded;
+}
+
+.sp-row-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.sp-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.edit-icon {
+  background: #eaf8e9;
+  color: #16702a;
+}
+
+.edit-icon:hover {
+  background: #d3efd3;
+}
+
+.delete-icon {
+  background: #fff0f0;
+  color: #d12c2c;
+}
+
+.delete-icon:hover {
+  background: #ffe0e0;
+}
+
+/* EMPTY STATE */
+.sp-empty-state {
+  padding: 45px 20px;
+  text-align: center;
+  color: #708072;
+}
+
+.sp-empty-state span {
+  font-size: 35px;
+}
+
+.sp-empty-state h3 {
+  margin: 10px 0;
+  color: #344b38;
+}
+
+.sp-empty-state p {
+  font-size: 14px;
+}
+
+.sp-selection-info {
+  margin: 15px 0 0;
+  color: #187331;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .sp-page {
+    padding: 15px 12px;
+  }
+
+  .sp-list-card {
+    padding: 15px;
+  }
+
+  .sp-list-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sp-bulk-actions {
+    width: 100%;
+  }
+
+  .sp-bulk-actions button {
+    flex: 1;
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .sp-list-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sp-list-controls > input,
+  .sp-filter-control,
+  .sp-filter-control select {
+    width: 100%;
+  }
+
+  .sp-filter-control {
+    justify-content: space-between;
+  }
+
+  .sp-filter-control select {
+    width: auto;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .sp-results-count {
+    margin-left: 0;
+  }
+
+  .sp-card-heading h2 {
+    font-size: 19px;
+  }
+}
